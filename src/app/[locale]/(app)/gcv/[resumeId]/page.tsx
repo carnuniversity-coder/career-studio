@@ -1,0 +1,90 @@
+import type { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+
+import { GcvEditorClient } from "@/components/feature/gcv/gcv-editor-client";
+import { defaultLocale, isLocale } from "@/i18n-config";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { parseResumeContent } from "@/lib/resume-content";
+
+type GcvEditorPageProps = {
+  params: Promise<{ locale: string; resumeId: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+type Theme = {
+  accent: string;
+  density: "compact" | "comfortable" | "spacious";
+  template: string;
+};
+
+function parseTheme(value: unknown): Theme {
+  if (!value || typeof value !== "object") {
+    return { accent: "teal", density: "comfortable", template: "modern" };
+  }
+
+  const record = value as Record<string, unknown>;
+  return {
+    accent: typeof record.accent === "string" ? record.accent : "teal",
+    density: record.density === "compact" || record.density === "spacious" ? record.density : "comfortable",
+    template: typeof record.template === "string" ? record.template : "modern",
+  };
+}
+
+export async function generateMetadata({ params }: GcvEditorPageProps): Promise<Metadata> {
+  const { locale: rawLocale } = await params;
+  const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
+  const t = await getTranslations({ locale, namespace: "phase3.meta.gcvEditor" });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
+
+export default async function GcvEditorPage({ params, searchParams }: GcvEditorPageProps) {
+  const { locale: rawLocale, resumeId } = await params;
+  const locale = isLocale(rawLocale) ? rawLocale : defaultLocale;
+  const query = await searchParams;
+  const t = await getTranslations({ locale, namespace: "phase3.gcvEditor" });
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect(`/${locale}/auth/sign-in`);
+  }
+
+  const resume = await prisma.gCVResume.findFirst({
+    where: { id: resumeId, userId: session.user.id },
+  });
+
+  if (!resume) {
+    notFound();
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tight text-neutral-950">{resume.title}</h1>
+        <p className="mt-2 text-sm text-neutral-600">{query.saved ? t("saved") : t("subtitle")}</p>
+      </div>
+      <GcvEditorClient
+        locale={locale}
+        resumeId={resume.id}
+        title={resume.title}
+        initialContent={parseResumeContent(resume.contentJson)}
+        initialTheme={parseTheme(resume.themeJson)}
+        labels={{
+          title: t("titleLabel"),
+          accent: t("accent"),
+          density: t("density"),
+          template: t("template"),
+          summary: t("summary"),
+          skills: t("skills"),
+          save: t("save"),
+          preview: t("preview"),
+        }}
+      />
+    </div>
+  );
+}

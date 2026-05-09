@@ -7,7 +7,7 @@ import { env } from "@/env";
 import type { Locale } from "@/i18n-config";
 import { auth, signIn, signOut } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { lkPhoneRegex, normalizeLkPhone } from "@/lib/validators";
+import { lkPhoneRegex, normalizeLkPhone } from "@/lib/phone";
 import { ensureUserProfile, generateReferralCode, refreshReferrerRewards, splitFullName } from "@/server/services/accounts";
 
 const emailSchema = z.string().trim().email().toLowerCase();
@@ -170,7 +170,7 @@ export async function createAccountAndSendLink(locale: Locale, formData: FormDat
 export async function updateProfile(locale: Locale, formData: FormData) {
   const session = await auth();
 
-  if (!session?.user.id) {
+  if (!session?.user?.id) {
     redirect(authPath(locale, "/auth/sign-in"));
   }
 
@@ -212,7 +212,7 @@ export async function updateProfile(locale: Locale, formData: FormData) {
 export async function updateAccountEmail(locale: Locale, formData: FormData) {
   const session = await auth();
 
-  if (!session?.user.id) {
+  if (!session?.user?.id) {
     redirect(authPath(locale, "/auth/sign-in"));
   }
 

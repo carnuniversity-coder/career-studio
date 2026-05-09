@@ -394,5 +394,118 @@
       "privacyBodyTwo": "Uploaded files and AI features will use Supabase Storage and Gemini-backed services as later phases come online.",
       "privacyBodyThree": "Deletion, export, and detailed consent flows are deferred until the related data modules are migrated."
     }
+  },
+  "phase3": {
+    "meta": {
+      "resumes": {
+        "title": "Resumes - Career Studio",
+        "description": "Create, edit, export, and manage ATS-ready resumes."
+      },
+      "resumeEditor": {
+        "title": "Resume Editor - Career Studio",
+        "description": "Edit resume sections with autosave, AI improvement, live preview, and export."
+      },
+      "ats": {
+        "title": "ATS Checker - Career Studio",
+        "description": "Upload or paste a resume and score it against ATS best practices and a job description."
+      },
+      "coverLetter": {
+        "title": "Cover Letters - Career Studio",
+        "description": "Generate and edit tailored cover letters with AI support."
+      },
+      "coverLetterEditor": {
+        "title": "Cover Letter Editor - Career Studio",
+        "description": "Edit and export a generated cover letter."
+      },
+      "gcv": {
+        "title": "Graphical CV - Career Studio",
+        "description": "Create visual CVs with simple theme customisation."
+      },
+      "gcvEditor": {
+        "title": "Graphical CV Editor - Career Studio",
+        "description": "Customize a graphical CV theme and content preview."
+      }
+    },
+    "resumes": {
+      "title": "My Resumes",
+      "subtitle": "Build ATS-ready resumes, keep versions, and export PDF or DOCX.",
+      "createTitle": "Create a new resume",
+      "titlePlaceholder": "Resume title",
+      "create": "Create resume",
+      "updated": "Updated",
+      "edit": "Edit",
+      "emptyTitle": "No resumes yet",
+      "emptyBody": "Start with a role template and refine it in the live editor."
+    },
+    "resumeEditor": {
+      "subtitle": "Drag sections, edit content, autosave changes, and export when ready.",
+      "saveIdle": "Ready to autosave",
+      "saving": "Saving...",
+      "saved": "Saved",
+      "improve": "AI improve summary",
+      "add": "Add",
+      "remove": "Remove",
+      "livePreview": "Live preview",
+      "sections": {
+        "header": "Header",
+        "summary": "Summary",
+        "experience": "Experience",
+        "education": "Education",
+        "skills": "Skills",
+        "projects": "Projects",
+        "certifications": "Certifications"
+      }
+    },
+    "ats": {
+      "title": "ATS Checker",
+      "subtitle": "Upload a resume or paste extracted text, then compare against general ATS rules or a specific job description.",
+      "uploadTitle": "Resume upload",
+      "uploadBody": "Drag and drop a resume, or browse files",
+      "pasteLabel": "Resume text",
+      "jdLabel": "Target job description",
+      "analyze": "Analyze resume",
+      "scoreTitle": "Score breakdown",
+      "issues": "Issues",
+      "suggestions": "Suggestions",
+      "jdMatch": "JD keyword match"
+    },
+    "coverLetter": {
+      "title": "Cover Letters",
+      "subtitle": "Create a targeted cover letter from your profile and the role you want.",
+      "wizardTitle": "Cover letter wizard",
+      "jobTitle": "Job title",
+      "companyName": "Company name",
+      "profileText": "Paste your CV summary, experience, or resume text",
+      "jobDescription": "Paste the job description",
+      "generate": "Generate cover letter",
+      "openEditor": "Open editor"
+    },
+    "coverLetterEditor": {
+      "subtitle": "Edit each section, save a version, and export PDF or DOCX.",
+      "saved": "Saved successfully.",
+      "sections": "Editable sections",
+      "save": "Save version",
+      "preview": "Preview"
+    },
+    "gcv": {
+      "title": "Graphical CV",
+      "subtitle": "Create a visual CV for portfolio-led or creative applications.",
+      "createTitle": "Create visual CV",
+      "titlePlaceholder": "My Visual Resume",
+      "create": "Create GCV",
+      "openEditor": "Open editor"
+    },
+    "gcvEditor": {
+      "subtitle": "Tune the visual theme and keep the content aligned with your resume.",
+      "saved": "Saved successfully.",
+      "titleLabel": "Title",
+      "accent": "Accent color",
+      "density": "Density",
+      "template": "Template",
+      "summary": "Summary",
+      "skills": "Skills",
+      "save": "Save GCV",
+      "preview": "Visual preview"
+    }
   }
 }

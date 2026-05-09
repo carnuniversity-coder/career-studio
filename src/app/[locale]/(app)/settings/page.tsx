@@ -61,7 +61,7 @@ export default async function SettingsPage({ params, searchParams }: SettingsPag
   const t = await getTranslations({ locale, namespace: "phase2.settings" });
   const session = await auth();
 
-  if (!session?.user.id) {
+  if (!session?.user?.id) {
     redirect(`/${locale}/auth/sign-in`);
   }
 
