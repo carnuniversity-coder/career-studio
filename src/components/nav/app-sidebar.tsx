@@ -18,7 +18,9 @@ import {
   Users,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import type { PlanTier } from "@prisma/client";
 
+import { PlanTierBadge } from "@/components/account/plan-tier-badge";
 import { Separator } from "@/components/ui/separator";
 import type { Locale } from "@/i18n-config";
 
@@ -41,7 +43,7 @@ const sidebarItems = [
   ["Settings", "settings", Settings],
 ] as const;
 
-export async function AppSidebar({ locale }: { locale: Locale }) {
+export async function AppSidebar({ locale, planTier }: { locale: Locale; planTier: PlanTier }) {
   const t = await getTranslations();
   const prefix = `/${locale}`;
 
@@ -52,6 +54,9 @@ export async function AppSidebar({ locale }: { locale: Locale }) {
           <BriefcaseBusiness className="size-5" />
         </span>
         <span className="font-semibold">{t("Career Studio")}</span>
+      </div>
+      <div className="px-5 pb-4">
+        <PlanTierBadge planTier={planTier} label={t(`phase2.plans.${planTier}`)} />
       </div>
       <Separator />
       <nav className="grid gap-1 p-3">

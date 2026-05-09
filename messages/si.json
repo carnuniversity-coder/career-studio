@@ -223,5 +223,176 @@
       "topics": "Topics",
       "related": "Related posts"
     }
+  },
+  "phase2": {
+    "plans": {
+      "basic": "Basic",
+      "pro": "Pro",
+      "premium": "Premium"
+    },
+    "meta": {
+      "signIn": {
+        "title": "Sign in - Career Studio",
+        "description": "Sign in to Career Studio with Google or a secure email link."
+      },
+      "signUp": {
+        "title": "Create account - Career Studio",
+        "description": "Create a Career Studio account and start building ATS-ready resumes for Sri Lankan job searches."
+      },
+      "reset": {
+        "title": "Account recovery - Career Studio",
+        "description": "Request a secure Career Studio recovery link by email."
+      },
+      "verifyRequest": {
+        "title": "Check your email - Career Studio",
+        "description": "Check your inbox for your secure Career Studio sign-in link."
+      },
+      "settings": {
+        "title": "Settings - Career Studio",
+        "description": "Manage your Career Studio profile, account email, plan, quotas, and referral code."
+      },
+      "terms": {
+        "title": "Terms of Service - Career Studio",
+        "description": "Career Studio terms for using the migrated Next.js platform."
+      },
+      "privacy": {
+        "title": "Privacy Policy - Career Studio",
+        "description": "Career Studio privacy notes for account, profile, resume, and job-search data."
+      }
+    },
+    "auth": {
+      "brand": "Career Studio",
+      "signInShellTitle": "Welcome back",
+      "signInShellSubtitle": "Continue building resumes, checking ATS fit, and tracking career progress from one Sri Lanka-first workspace.",
+      "signUpShellTitle": "Start your career studio",
+      "signUpShellSubtitle": "Create a free account and get a secure email verification link before the full feature modules come online.",
+      "resetShellTitle": "Recover access securely",
+      "resetShellSubtitle": "Email sign-in links replace password reset flows in this Auth.js migration.",
+      "featureAiTitle": "AI-powered writing",
+      "featureAiBody": "Improve summaries, bullets, cover letters, and interview answers with guided Gemini workflows.",
+      "featureAtsTitle": "ATS optimization",
+      "featureAtsBody": "Score resumes against job descriptions and improve keyword coverage before applying.",
+      "featureTemplatesTitle": "Professional templates",
+      "featureTemplatesBody": "The resume template tiers and Sri Lankan pricing model carry forward from the Django pilot.",
+      "featureFreeTitle": "Free to start",
+      "featureFreeBody": "Basic tools stay available while Pro and Premium gates are introduced deliberately.",
+      "featurePrivateTitle": "Secure and private",
+      "featurePrivateBody": "Profile and career data are tied to your UUID user account and protected routes.",
+      "featureSetupTitle": "Quick setup",
+      "featureSetupBody": "Start with email, Google, optional referral code, and a lightweight profile.",
+      "signInTitle": "Sign in to your account",
+      "signInSubtitle": "Use Google or request a secure email link. No password is stored for email sign-in.",
+      "signUpTitle": "Create your account",
+      "signUpSubtitle": "We will email a verification link so you can finish signing in safely.",
+      "resetTitle": "Send a recovery link",
+      "resetSubtitle": "Enter your email and we will send a secure link to continue.",
+      "emailLabel": "Email address",
+      "emailPlaceholder": "you@example.com",
+      "nameLabel": "Full name",
+      "namePlaceholder": "Chanuka Jeewantha",
+      "referralLabel": "Referral code",
+      "referralPlaceholder": "Optional",
+      "continueGoogle": "Continue with Google",
+      "signUpGoogle": "Sign up with Google",
+      "sendSignInLink": "Send sign-in link",
+      "sendRecoveryLink": "Send recovery link",
+      "createAccountSendLink": "Create account and send link",
+      "or": "or",
+      "resetLink": "Need an account recovery link?",
+      "newHere": "New here?",
+      "createAccount": "Create account",
+      "alreadyHaveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "backToSignIn": "Back to sign in",
+      "termsPrefix": "I agree to the",
+      "terms": "Terms of Service",
+      "and": "and",
+      "privacy": "Privacy Policy",
+      "verifyTitle": "Check your email",
+      "verifyBody": "If the address is valid, a secure Career Studio link is on the way. In development without Resend, the link is printed in the server console.",
+      "errors": {
+        "default": "Something went wrong. Please try again.",
+        "invalid": "Please check the form and try again.",
+        "invalid-email": "Enter a valid email address.",
+        "google-unconfigured": "Google sign-in is not configured in this environment yet."
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your account, profile, plan, quotas, and referral details.",
+      "nav": {
+        "profile": "Profile",
+        "account": "Account & Security",
+        "plan": "Plan & Quotas",
+        "referrals": "Referrals",
+        "danger": "Danger Zone"
+      },
+      "profileTitle": "Personal information",
+      "accountTitle": "Account & security",
+      "planTitle": "Current plan",
+      "referralsTitle": "Referral programme",
+      "dangerTitle": "Danger zone",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Phone",
+      "linkedinUrl": "LinkedIn URL",
+      "saveProfile": "Save changes",
+      "email": "Email address",
+      "updateEmail": "Update email",
+      "memberSince": "Member since",
+      "accountId": "Account ID",
+      "viewPricing": "View pricing",
+      "dailyExports": "Daily exports",
+      "monthlyAts": "ATS checks",
+      "monthlyAi": "AI calls",
+      "remainingToday": "remaining today",
+      "remainingMonth": "remaining this month",
+      "referralsBody": "Invite friends and earn Pro template access as referrals join Career Studio.",
+      "totalReferrals": "Total referrals",
+      "proEarned": "Pro templates earned",
+      "nextReward": "Referrals to next reward",
+      "referralCode": "Your referral code",
+      "copyInBrowser": "Copy from page",
+      "signOutTitle": "Sign out",
+      "signOutBody": "End the current session and return to the public site.",
+      "signOut": "Sign out",
+      "deleteTitle": "Delete account",
+      "deleteBody": "Permanent deletion will be implemented after data export and audit flows are migrated.",
+      "deleteDisabled": "Coming later",
+      "plans": {
+        "basic": "Basic Plan",
+        "pro": "Pro Plan",
+        "premium": "Premium Plan"
+      },
+      "planCopy": {
+        "basic": "Basic includes starter quotas for exports, ATS checks, and AI usage.",
+        "pro": "Pro raises quotas for active job seekers applying across multiple roles.",
+        "premium": "Premium is intended for high-volume users who need near-unlimited access."
+      },
+      "saved": {
+        "default": "Settings saved.",
+        "profile": "Profile updated successfully.",
+        "email": "Email updated successfully. Please verify the new address before relying on it for account recovery."
+      },
+      "errors": {
+        "default": "Something went wrong. Please check the form and try again.",
+        "profile": "Profile details could not be saved. Check the phone number and LinkedIn URL.",
+        "email": "Enter a valid email address.",
+        "email-taken": "That email address is already in use."
+      }
+    },
+    "legal": {
+      "eyebrow": "Legal",
+      "termsTitle": "Terms of Service",
+      "termsDescription": "A lightweight Phase 2 placeholder for the public sign-up flow.",
+      "termsBodyOne": "Career Studio is being migrated from Django to Next.js in phases. Features may be incomplete until their phase is delivered.",
+      "termsBodyTwo": "Use the platform responsibly and only upload documents you are allowed to process.",
+      "termsBodyThree": "Paid plans and billing actions remain disabled until Stripe flows are migrated in a later phase.",
+      "privacyTitle": "Privacy Policy",
+      "privacyDescription": "A lightweight Phase 2 placeholder for account and profile data handling.",
+      "privacyBodyOne": "Career Studio stores account, profile, resume, and job-search data against a UUID user account.",
+      "privacyBodyTwo": "Uploaded files and AI features will use Supabase Storage and Gemini-backed services as later phases come online.",
+      "privacyBodyThree": "Deletion, export, and detailed consent flows are deferred until the related data modules are migrated."
+    }
   }
 }
