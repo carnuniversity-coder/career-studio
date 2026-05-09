@@ -1,0 +1,1426 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PlanTier {
+  basic
+  pro
+  premium
+}
+
+enum TemplateTier {
+  basic
+  pro
+  premium
+}
+
+enum JobApplicationStatus {
+  bookmarked
+  applied
+  screening
+  interview
+  offer
+  accepted
+  rejected
+  withdrew
+}
+
+enum Priority {
+  low
+  medium
+  high
+}
+
+enum InterviewCategory {
+  behavioral
+  technical
+  situational
+  competency
+  industry
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
+enum SalaryExperienceLevel {
+  entry
+  mid
+  senior
+  lead
+  executive
+}
+
+enum EmploymentType {
+  full_time
+  contract
+  part_time
+}
+
+enum CareerTaskType {
+  LEARN
+  BUILD
+  APPLY
+  NETWORK
+  INTERVIEW
+}
+
+enum NotificationType {
+  ats_complete
+  resume_export
+  application_reminder
+  interview_feedback
+  subscription
+  system
+  message
+  forum_reply
+}
+
+enum FeedbackType {
+  bug
+  feature
+  improvement
+  other
+}
+
+enum FeedbackStatus {
+  new
+  in_review
+  planned
+  completed
+  wont_fix
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  past_due
+  canceled
+  unpaid
+  incomplete
+  incomplete_expired
+}
+
+enum BillingInterval {
+  month
+  year
+}
+
+enum BlogPostStatus {
+  draft
+  published
+  archived
+}
+
+enum MentorshipRequestStatus {
+  pending
+  accepted
+  declined
+  cancelled
+}
+
+enum MentorshipSessionStatus {
+  scheduled
+  completed
+  cancelled
+}
+
+enum ForumVoteType {
+  up
+  down
+}
+
+enum ConnectionRequestStatus {
+  pending
+  accepted
+  declined
+  cancelled
+}
+
+enum ResourceType {
+  article
+  ebook
+  template
+  video
+  checklist
+  other
+}
+
+enum AnnotationType {
+  highlight
+  note
+}
+
+enum AIUsageStatus {
+  success
+  error
+  timeout
+  quota_exceeded
+}
+
+enum MessageAttachmentKind {
+  image
+  document
+  text
+  csv
+  other
+}
+
+model User {
+  id             String    @id @default(uuid()) @db.Uuid
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  username       String?
+  firstName      String    @default("")
+  lastName       String    @default("")
+  supabaseUserId String?   @unique @db.Uuid
+  isActive       Boolean   @default(true)
+  isStaff        Boolean   @default(false)
+  isSuperuser    Boolean   @default(false)
+  passwordHash   String?
+  dateJoined     DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  accounts       Account[]
+  sessions       Session[]
+  profile        UserProfile?
+  authenticators Authenticator[]
+
+  @@map("django_users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @db.Uuid
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String   @db.Uuid
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Authenticator {
+  credentialID         String  @unique
+  userId               String  @db.Uuid
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
+model UserProfile {
+  id                        String    @id @default(uuid()) @db.Uuid
+  userId                    String    @unique @db.Uuid
+  referralCode              String    @unique
+  referredById              String?   @db.Uuid
+  phone                     String    @default("")
+  linkedinUrl               String    @default("")
+  profileImage              String?
+  totalReferrals            Int       @default(0)
+  proTemplatesEarned        Int       @default(0)
+  planTier                  PlanTier  @default(basic)
+  dailyExportsCount         Int       @default(0)
+  lastExportDate            DateTime? @db.Date
+  monthlyAtsChecks          Int       @default(0)
+  lastAtsCheckReset         DateTime? @db.Date
+  purchasedProTemplates     Json      @default("[]")
+  purchasedPremiumTemplates Json      @default("[]")
+  createdAt                 DateTime  @default(now())
+  updatedAt                 DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model Resume {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  title       String
+  templateKey String   @default("classic")
+  theme       Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  content ResumeContent?
+
+  @@index([userId])
+  @@map("resumes")
+}
+
+model ResumeContent {
+  id           String   @id @default(uuid()) @db.Uuid
+  resumeId     String   @unique @db.Uuid
+  data         Json     @default("{}")
+  sectionOrder Json     @default("[]")
+  version      Int      @default(1)
+  updatedAt    DateTime @updatedAt
+
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@map("resume_contents")
+}
+
+model ResumeVersion {
+  id              String   @id @default(uuid()) @db.Uuid
+  resumeId        String   @db.Uuid
+  contentSnapshot Json     @default("{}")
+  versionNumber   Int      @default(1)
+  changeSummary   String   @default("")
+  createdBy       String   @default("System")
+  isCurrent       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+
+  @@index([resumeId, createdAt])
+  @@map("resume_versions")
+}
+
+model JobTarget {
+  id             String   @id @default(uuid()) @db.Uuid
+  resumeId       String   @db.Uuid
+  jobTitle       String
+  jobDescription String?
+  keywords       Json     @default("[]")
+  updatedAt      DateTime @updatedAt
+
+  @@map("job_targets")
+}
+
+model TemplateCategory {
+  id                       Int          @id @default(autoincrement())
+  name                     TemplateTier @unique
+  displayName              String
+  description              String
+  priceLkr                 Decimal      @default(0) @db.Decimal(10, 2)
+  isFree                   Boolean      @default(false)
+  colorSchemesCount        Int          @default(1)
+  includesCoverLetter      Boolean      @default(false)
+  includesLinkedinTemplate Boolean      @default(false)
+  prioritySupport          Boolean      @default(false)
+  createdAt                DateTime     @default(now())
+  updatedAt                DateTime     @updatedAt
+
+  @@map("template_categories")
+}
+
+model JobRoleTemplate {
+  id             String       @id @default(uuid()) @db.Uuid
+  roleName       String
+  slug           String       @unique
+  description    String
+  iconName       String
+  category       TemplateTier
+  templateHtml   String       @default("")
+  templateCss    String       @default("")
+  defaultContent Json         @default("{}")
+  previewImage   String?
+  isActive       Boolean      @default(true)
+  sortOrder      Int          @default(0)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([roleName, category])
+  @@map("job_role_templates")
+}
+
+model CVDocument {
+  id            String   @id @default(uuid()) @db.Uuid
+  userId        String?  @db.Uuid
+  sessionKey    String?
+  filePath      String
+  filename      String
+  fileType      String
+  fileSize      Int
+  extractedText String   @default("")
+  uploadedAt    DateTime @default(now())
+
+  result ATSCheckResult?
+
+  @@map("cv_documents")
+}
+
+model ATSCheckResult {
+  id                String    @id @default(uuid()) @db.Uuid
+  cvDocumentId      String    @unique @db.Uuid
+  overallScore      Int
+  formatScore       Int       @default(0)
+  contentScore      Int       @default(0)
+  keywordsScore     Int       @default(0)
+  lengthScore       Int       @default(0)
+  jdKeywordMatchPct Int?
+  jdTopKeywords     Json      @default("[]")
+  scores            Json
+  issues            Json      @default("[]")
+  suggestions       Json      @default("[]")
+  isUnlocked        Boolean   @default(false)
+  unlockedAt        DateTime?
+  createdAt         DateTime  @default(now())
+
+  cvDocument CVDocument @relation(fields: [cvDocumentId], references: [id], onDelete: Cascade)
+
+  @@map("ats_check_results")
+}
+
+model CoverLetter {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @db.Uuid
+  resumeId       String?  @db.Uuid
+  title          String
+  jobTitle       String   @default("")
+  companyName    String   @default("")
+  jobDescription String   @default("")
+  tone           String   @default("PROFESSIONAL")
+  content        Json     @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model CoverLetterDraft {
+  id            String   @id @default(uuid()) @db.Uuid
+  coverLetterId String   @db.Uuid
+  content       Json     @default("{}")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model CoverLetterVersion {
+  id            String   @id @default(uuid()) @db.Uuid
+  coverLetterId String   @db.Uuid
+  content       Json     @default("{}")
+  versionNumber Int      @default(1)
+  createdAt     DateTime @default(now())
+}
+
+model CoverLetterExport {
+  id            String   @id @default(uuid()) @db.Uuid
+  coverLetterId String   @db.Uuid
+  format        String
+  filePath      String
+  createdAt     DateTime @default(now())
+}
+
+model GCVResume {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  templateId  String?  @db.Uuid
+  title       String
+  contentJson Json     @default("{}")
+  themeJson   Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GCVTemplate {
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String
+  slug       String   @unique
+  category   String   @default("")
+  configJson Json     @default("{}")
+  previewUrl String?
+  isPremium  Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
+model GCVExport {
+  id        String   @id @default(uuid()) @db.Uuid
+  resumeId  String   @db.Uuid
+  format    String
+  filePath  String
+  createdAt DateTime @default(now())
+}
+
+model JobApplication {
+  id             String               @id @default(uuid()) @db.Uuid
+  userId         String               @db.Uuid
+  companyName    String
+  jobTitle       String
+  jobUrl         String               @default("")
+  location       String               @default("")
+  salaryRange    String               @default("")
+  status         JobApplicationStatus @default(bookmarked)
+  priority       Priority             @default(medium)
+  resumeUsedId   String?              @db.Uuid
+  appliedDate    DateTime?            @db.Date
+  responseDate   DateTime?            @db.Date
+  followUpDate   DateTime?            @db.Date
+  recruiterName  String               @default("")
+  recruiterEmail String               @default("")
+  recruiterPhone String               @default("")
+  notes          String               @default("")
+  tags           String               @default("")
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@index([userId, status])
+  @@map("job_applications")
+}
+
+model ApplicationNote {
+  id            String   @id @default(uuid()) @db.Uuid
+  applicationId String   @db.Uuid
+  note          String
+  createdAt     DateTime @default(now())
+
+  @@map("application_notes")
+}
+
+model FollowUpReminder {
+  id            String   @id @default(uuid()) @db.Uuid
+  applicationId String   @db.Uuid
+  reminderDate  DateTime @db.Date
+  message       String
+  isCompleted   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  @@map("follow_up_reminders")
+}
+
+model InterviewQuestion {
+  id             String            @id @default(uuid()) @db.Uuid
+  questionText   String
+  category       InterviewCategory
+  difficulty     Difficulty        @default(medium)
+  sampleAnswer   String            @default("")
+  tips           String            @default("")
+  keyPoints      Json              @default("[]")
+  tags           String            @default("")
+  isPremium      Boolean           @default(false)
+  isActive       Boolean           @default(true)
+  timesPracticed Int               @default(0)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([category, difficulty])
+  @@map("interview_questions")
+}
+
+model PracticeSession {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @db.Uuid
+  category          String    @default("")
+  difficulty        String    @default("")
+  numQuestions      Int       @default(5)
+  questionsAnswered Int       @default(0)
+  timeSpent         Int       @default(0)
+  completed         Boolean   @default(false)
+  startedAt         DateTime  @default(now())
+  completedAt       DateTime?
+
+  @@map("practice_sessions")
+}
+
+model UserResponse {
+  id         String   @id @default(uuid()) @db.Uuid
+  sessionId  String   @db.Uuid
+  questionId String   @db.Uuid
+  userAnswer String
+  timeTaken  Int
+  aiFeedback String   @default("")
+  aiScore    Int?
+  createdAt  DateTime @default(now())
+
+  @@map("user_responses")
+}
+
+model SavedQuestion {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  questionId String   @db.Uuid
+  notes      String   @default("")
+  savedAt    DateTime @default(now())
+
+  @@unique([userId, questionId])
+  @@map("saved_questions")
+}
+
+model SalaryData {
+  id              String                @id @default(uuid()) @db.Uuid
+  jobTitle        String
+  jobCategory     String                @default("")
+  experienceLevel SalaryExperienceLevel
+  country         String
+  state           String                @default("")
+  city            String                @default("")
+  isRemote        Boolean               @default(false)
+  currency        String                @default("LKR")
+  salaryMin       Decimal               @db.Decimal(12, 2)
+  salaryMax       Decimal               @db.Decimal(12, 2)
+  salaryMedian    Decimal?              @db.Decimal(12, 2)
+  employmentType  EmploymentType        @default(full_time)
+  companySize     String                @default("")
+  industry        String                @default("")
+  dataSource      String                @default("seed")
+  sampleSize      Int                   @default(1)
+  confidenceScore Int                   @default(50)
+  isVerified      Boolean               @default(false)
+  lastUpdated     DateTime              @updatedAt
+  createdAt       DateTime              @default(now())
+
+  @@index([jobTitle, country])
+  @@map("salary_data")
+}
+
+model SalarySubmission {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String?  @db.Uuid
+  jobTitle          String
+  jobCategory       String   @default("")
+  yearsExperience   Int
+  yearsAtCompany    Int
+  country           String
+  state             String   @default("")
+  city              String   @default("")
+  isRemote          Boolean  @default(false)
+  baseSalary        Decimal  @db.Decimal(12, 2)
+  bonus             Decimal  @default(0) @db.Decimal(12, 2)
+  stockValue        Decimal  @default(0) @db.Decimal(12, 2)
+  otherCompensation Decimal  @default(0) @db.Decimal(12, 2)
+  currency          String   @default("LKR")
+  companySize       String   @default("")
+  industry          String   @default("")
+  isApproved        Boolean  @default(false)
+  isFlagged         Boolean  @default(false)
+  isPublic          Boolean  @default(true)
+  flaggedReason     String   @default("")
+  submittedAt       DateTime @default(now())
+
+  @@map("salary_submissions")
+}
+
+model SalaryCalculation {
+  id              String   @id @default(uuid()) @db.Uuid
+  userId          String?  @db.Uuid
+  jobTitle        String
+  experienceLevel String
+  location        String
+  salaryMin       Decimal  @db.Decimal(12, 2)
+  salaryMax       Decimal  @db.Decimal(12, 2)
+  salaryMedian    Decimal  @db.Decimal(12, 2)
+  percentile25    Decimal? @db.Decimal(12, 2)
+  percentile75    Decimal? @db.Decimal(12, 2)
+  calculatedAt    DateTime @default(now())
+
+  @@map("salary_calculations")
+}
+
+model CostOfLivingData {
+  id                  String   @id @default(uuid()) @db.Uuid
+  city                String
+  state               String   @default("")
+  country             String
+  overallIndex        Float
+  housingIndex        Float
+  foodIndex           Float
+  transportationIndex Float
+  lastUpdated         DateTime @updatedAt
+
+  @@unique([city, country])
+  @@map("cost_of_living")
+}
+
+model CareerGPSSession {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  status    String   @default("draft")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CareerGPSCV {
+  id        String   @id @default(uuid()) @db.Uuid
+  sessionId String   @db.Uuid
+  filePath  String?
+  text      String   @default("")
+  dataJson  Json     @default("{}")
+  createdAt DateTime @default(now())
+}
+
+model CareerGPSQuestionnaire {
+  id        String   @id @default(uuid()) @db.Uuid
+  sessionId String   @unique @db.Uuid
+  answers   Json     @default("{}")
+  updatedAt DateTime @updatedAt
+}
+
+model CareerGPSGoal {
+  id         String   @id @default(uuid()) @db.Uuid
+  sessionId  String   @db.Uuid
+  targetRole String
+  timeframe  String   @default("")
+  goalsJson  Json     @default("{}")
+  createdAt  DateTime @default(now())
+}
+
+model CareerGPSPlan {
+  id        String   @id @default(uuid()) @db.Uuid
+  sessionId String   @unique @db.Uuid
+  planJson  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CareerGPSMilestone {
+  id          String @id @default(uuid()) @db.Uuid
+  planId      String @db.Uuid
+  weekStart   Int
+  weekEnd     Int
+  title       String
+  description String @default("")
+  sortOrder   Int    @default(0)
+}
+
+model CareerGPSTask {
+  id            String         @id @default(uuid()) @db.Uuid
+  milestoneId   String         @db.Uuid
+  week          Int
+  type          CareerTaskType
+  title         String
+  effortMinutes Int            @default(60)
+  outcome       String         @default("")
+  isDone        Boolean        @default(false)
+  sortOrder     Int            @default(0)
+}
+
+model CareerGPSResourceLink {
+  id       String @id @default(uuid()) @db.Uuid
+  taskId   String @db.Uuid
+  type     String
+  objectId String
+  title    String
+  url      String @default("")
+}
+
+model LinkedInAudit {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  targetRole String   @default("")
+  inputText  String   @default("")
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model LinkedInInputFile {
+  id        String   @id @default(uuid()) @db.Uuid
+  auditId   String   @db.Uuid
+  filePath  String
+  filename  String
+  mimeType  String
+  fileSize  Int
+  createdAt DateTime @default(now())
+}
+
+model LinkedInExtractedProfile {
+  id        String   @id @default(uuid()) @db.Uuid
+  auditId   String   @unique @db.Uuid
+  dataJson  Json     @default("{}")
+  text      String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model LinkedInAuditResult {
+  id              String   @id @default(uuid()) @db.Uuid
+  auditId         String   @unique @db.Uuid
+  scoreBreakdown  Json     @default("{}")
+  missingKeywords Json     @default("[]")
+  sectionScores   Json     @default("{}")
+  checklistItems  Json     @default("[]")
+  summaryFeedback String   @default("")
+  createdAt       DateTime @default(now())
+}
+
+model LinkedInRewriteSuggestion {
+  id          String   @id @default(uuid()) @db.Uuid
+  auditId     String   @db.Uuid
+  sectionType String
+  original    String
+  rewritten   String
+  tone        String   @default("STANDARD")
+  createdAt   DateTime @default(now())
+}
+
+model LinkedInExport {
+  id        String   @id @default(uuid()) @db.Uuid
+  auditId   String   @db.Uuid
+  format    String
+  filePath  String
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id      Int      @id @default(autoincrement())
+  name    String
+  slug    String   @unique
+  courses Course[]
+}
+
+model Course {
+  id                    Int       @id @default(autoincrement())
+  title                 String
+  categoryId            Int?
+  officialUrl           String?
+  awardType             String    @default("")
+  deliveryMode          String    @default("")
+  level                 String    @default("")
+  language              String    @default("")
+  city                  String    @default("")
+  district              String    @default("")
+  venue                 String    @default("")
+  isFree                Boolean   @default(false)
+  price                 Decimal?  @db.Decimal(10, 2)
+  priceLabel            String    @default("")
+  currency              String    @default("")
+  installmentAvailable  Boolean   @default(false)
+  scholarshipAvailable  Boolean   @default(false)
+  durationLabel         String    @default("")
+  nextBatch             String    @default("")
+  admissionDeadline     DateTime? @db.Date
+  summary               String    @default("")
+  overview              String    @default("")
+  description           String    @default("")
+  curriculum            String    @default("")
+  learningOutcomes      String    @default("")
+  requirements          String    @default("")
+  provider              String    @default("")
+  providerVerified      Boolean   @default(false)
+  certificateIncluded   Boolean   @default(false)
+  providerContactEmail  String    @default("")
+  providerContactPhone  String    @default("")
+  courseId              String?   @unique
+  courseSlug            String?
+  status                String?
+  featured              Boolean   @default(false)
+  providerName          String?
+  providerLogoUrl       String?
+  providerWebsite       String?
+  detailsUrl            String?
+  applyUrl              String?
+  syllabusUrl           String?
+  coverImageUrl         String?
+  industry              String?
+  industryGroup         String?
+  subcategory           String?
+  courseTitle           String?
+  shortTitle            String?
+  pricingModel          String?
+  deliveryRegion        String?
+  attendanceMode        String?
+  country               String?
+  stateProvince         String?
+  venueName             String?
+  venueAddress          String?
+  timezone              String?
+  certificateAvailable  Boolean?  @default(false)
+  installmentsAvailable Boolean?  @default(false)
+  financialAidAvailable Boolean?  @default(false)
+  durationValue         String?
+  durationUnit          String?
+  scheduleType          String?
+  scheduleNotes         String?
+  startDate             DateTime? @db.Date
+  enrollmentStatus      String?
+  ratingValue           Decimal?  @db.Decimal(4, 2)
+  ratingCount           Int?
+  learnerCount          Int?
+  priceAmount           Decimal?  @db.Decimal(12, 2)
+  priceCurrency         String?
+  startingFromAmount    Decimal?  @db.Decimal(12, 2)
+  startingFromCurrency  String?
+  installmentFromAmount Decimal?  @db.Decimal(12, 2)
+  feeNotes              String?
+  mentorSupport         String?
+  mentorResponseTime    String?
+  tag1                  String?
+  tag2                  String?
+  tag3                  String?
+  tag4                  String?
+  badge1                String?
+  badge2                String?
+  badge3                String?
+  cardCtaPrimaryLabel   String?
+  cardCtaPrimaryUrl     String?
+  cardCtaSecondaryLabel String?
+  cardCtaSecondaryUrl   String?
+  compareEnabled        Boolean?  @default(false)
+  sourceUrl             String?
+  backupSourceUrl       String?
+  lastVerifiedAt        DateTime? @db.Date
+  linkStatus            String?
+  internalNotes         String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+}
+
+model Tool {
+  id            Int     @id @default(autoincrement())
+  name          String
+  industry      String  @default("")
+  tags          String  @default("")
+  tagline       String  @default("")
+  descriptionSi String  @default("")
+  content       String  @default("")
+  link          String  @default("")
+  icon          String  @default("")
+  isFree        Boolean @default(false)
+  verified      Boolean @default(false)
+}
+
+model SavedCourse {
+  id       Int      @id @default(autoincrement())
+  userId   String   @db.Uuid
+  courseId Int
+  savedAt  DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model SavedTool {
+  id      Int      @id @default(autoincrement())
+  userId  String   @db.Uuid
+  toolId  Int
+  savedAt DateTime @default(now())
+
+  @@unique([userId, toolId])
+}
+
+model ResourceCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  description String   @default("")
+  createdAt   DateTime @default(now())
+}
+
+model Resource {
+  id            String       @id @default(uuid()) @db.Uuid
+  categoryId    String?      @db.Uuid
+  title         String
+  slug          String       @unique
+  type          ResourceType @default(article)
+  description   String       @default("")
+  content       String       @default("")
+  fileUrl       String       @default("")
+  coverImage    String?
+  tags          String       @default("")
+  isPremium     Boolean      @default(false)
+  isPublished   Boolean      @default(true)
+  downloadCount Int          @default(0)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model ResourceDownload {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String?  @db.Uuid
+  resourceId String   @db.Uuid
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+}
+
+model SavedResource {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  resourceId String   @db.Uuid
+  savedAt    DateTime @default(now())
+
+  @@unique([userId, resourceId])
+}
+
+model BookAnnotation {
+  id             String         @id @default(uuid()) @db.Uuid
+  userId         String         @db.Uuid
+  bookSlug       String
+  annotationType AnnotationType
+  selectedText   String
+  noteText       String         @default("")
+  color          String         @default("#fef08a")
+  pageIndex      Int            @default(0)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model BlogCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique
+  slug        String   @unique
+  description String   @default("")
+  icon        String   @default("folder")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+model BlogPost {
+  id               String         @id @default(uuid()) @db.Uuid
+  title            String
+  slug             String         @unique
+  authorId         String?        @db.Uuid
+  authorName       String         @default("Career Studio Team")
+  excerpt          String
+  content          String
+  categoryId       String?        @db.Uuid
+  tags             String         @default("")
+  featuredImage    String?
+  featuredImageUrl String         @default("")
+  status           BlogPostStatus @default(draft)
+  isFeatured       Boolean        @default(false)
+  metaTitle        String         @default("")
+  metaDescription  String         @default("")
+  metaKeywords     String         @default("")
+  readingTime      Int            @default(5)
+  views            Int            @default(0)
+  likes            Int            @default(0)
+  publishedAt      DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model BlogComment {
+  id         String   @id @default(uuid()) @db.Uuid
+  postId     String   @db.Uuid
+  authorId   String?  @db.Uuid
+  authorName String
+  content    String
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model BlogLike {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @db.Uuid
+  userId    String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+}
+
+model BlogView {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @db.Uuid
+  userId    String?  @db.Uuid
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model SuccessStory {
+  id          String   @id @default(uuid()) @db.Uuid
+  authorId    String?  @db.Uuid
+  title       String
+  slug        String   @unique
+  content     String
+  imageUrl    String?
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Question {
+  id        String   @id @default(uuid()) @db.Uuid
+  authorId  String?  @db.Uuid
+  title     String
+  slug      String   @unique
+  body      String
+  tags      String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Answer {
+  id         String   @id @default(uuid()) @db.Uuid
+  questionId String   @db.Uuid
+  authorId   String?  @db.Uuid
+  body       String
+  isAccepted Boolean  @default(false)
+  voteCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+}
+
+model Event {
+  id          String    @id @default(uuid()) @db.Uuid
+  organizerId String?   @db.Uuid
+  title       String
+  slug        String    @unique
+  description String
+  startTime   DateTime
+  endTime     DateTime?
+  location    String
+  createdAt   DateTime  @default(now())
+}
+
+model MentorProfile {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @unique @db.Uuid
+  bio          String
+  expertise    Json     @default("[]")
+  hourlyRate   Decimal  @default(0) @db.Decimal(8, 2)
+  maxMentees   Int      @default(3)
+  availability Json     @default("{}")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model MentorshipRequest {
+  id        String                  @id @default(uuid()) @db.Uuid
+  menteeId  String                  @db.Uuid
+  mentorId  String                  @db.Uuid
+  message   String
+  status    MentorshipRequestStatus @default(pending)
+  createdAt DateTime                @default(now())
+  updatedAt DateTime                @updatedAt
+}
+
+model MentorshipSession {
+  id          String                  @id @default(uuid()) @db.Uuid
+  requestId   String                  @db.Uuid
+  title       String
+  startTime   DateTime
+  endTime     DateTime
+  meetingLink String                  @default("")
+  status      MentorshipSessionStatus @default(scheduled)
+  notes       String                  @default("")
+  createdAt   DateTime                @default(now())
+}
+
+model MentorReview {
+  id        String   @id @default(uuid()) @db.Uuid
+  sessionId String   @unique @db.Uuid
+  rating    Int      @default(5)
+  comment   String
+  createdAt DateTime @default(now())
+}
+
+model SocialEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  organizerId String   @db.Uuid
+  title       String
+  slug        String   @unique
+  description String
+  startTime   DateTime
+  location    String
+  createdAt   DateTime @default(now())
+}
+
+model Conversation {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id             String   @id @default(uuid()) @db.Uuid
+  conversationId String   @db.Uuid
+  senderId       String   @db.Uuid
+  body           String
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}
+
+model MessageAttachment {
+  id        String                @id @default(uuid()) @db.Uuid
+  messageId String                @db.Uuid
+  filename  String
+  filePath  String
+  mimeType  String
+  fileSize  Int
+  kind      MessageAttachmentKind @default(other)
+  createdAt DateTime              @default(now())
+}
+
+model ConversationArchive {
+  id             String   @id @default(uuid()) @db.Uuid
+  conversationId String   @db.Uuid
+  userId         String   @db.Uuid
+  archivedAt     DateTime @default(now())
+
+  @@unique([conversationId, userId])
+}
+
+model ForumRole {
+  id          String @id @default(uuid()) @db.Uuid
+  name        String @unique
+  slug        String @unique
+  description String @default("")
+}
+
+model UserRoleAssignment {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  roleId    String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roleId])
+}
+
+model ForumThread {
+  id        String   @id @default(uuid()) @db.Uuid
+  roleId    String?  @db.Uuid
+  authorId  String   @db.Uuid
+  title     String
+  slug      String   @unique
+  body      String
+  voteCount Int      @default(0)
+  isPinned  Boolean  @default(false)
+  isLocked  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ForumReply {
+  id        String   @id @default(uuid()) @db.Uuid
+  threadId  String   @db.Uuid
+  authorId  String   @db.Uuid
+  body      String
+  voteCount Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ForumVote {
+  id        String        @id @default(uuid()) @db.Uuid
+  userId    String        @db.Uuid
+  threadId  String?       @db.Uuid
+  replyId   String?       @db.Uuid
+  voteType  ForumVoteType
+  createdAt DateTime      @default(now())
+}
+
+model ForumFlag {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  threadId  String?  @db.Uuid
+  replyId   String?  @db.Uuid
+  reason    String
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+}
+
+model ConnectionRequest {
+  id          String                  @id @default(uuid()) @db.Uuid
+  requesterId String                  @db.Uuid
+  receiverId  String                  @db.Uuid
+  message     String                  @default("")
+  status      ConnectionRequestStatus @default(pending)
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+
+  @@unique([requesterId, receiverId])
+}
+
+model Connection {
+  id        String   @id @default(uuid()) @db.Uuid
+  userAId   String   @db.Uuid
+  userBId   String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  @@unique([userAId, userBId])
+}
+
+model Endorsement {
+  id         String   @id @default(uuid()) @db.Uuid
+  endorserId String   @db.Uuid
+  userId     String   @db.Uuid
+  skill      String
+  createdAt  DateTime @default(now())
+}
+
+model ProfileView {
+  id       String   @id @default(uuid()) @db.Uuid
+  viewerId String?  @db.Uuid
+  userId   String   @db.Uuid
+  viewedAt DateTime @default(now())
+}
+
+model UserBlock {
+  id        String   @id @default(uuid()) @db.Uuid
+  blockerId String   @db.Uuid
+  blockedId String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+}
+
+model UserReport {
+  id         String   @id @default(uuid()) @db.Uuid
+  reporterId String   @db.Uuid
+  reportedId String   @db.Uuid
+  reason     String
+  status     String   @default("new")
+  createdAt  DateTime @default(now())
+}
+
+model UserPrivacySettings {
+  id               String  @id @default(uuid()) @db.Uuid
+  userId           String  @unique @db.Uuid
+  showEmail        Boolean @default(false)
+  showPhone        Boolean @default(false)
+  allowMessages    Boolean @default(true)
+  allowConnections Boolean @default(true)
+}
+
+model Notification {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @db.Uuid
+  type      NotificationType
+  title     String
+  message   String
+  actionUrl String           @default("")
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+}
+
+model NotificationPreference {
+  id       String  @id @default(uuid()) @db.Uuid
+  userId   String  @unique @db.Uuid
+  email    Boolean @default(true)
+  inApp    Boolean @default(true)
+  digest   Boolean @default(false)
+  settings Json    @default("{}")
+}
+
+model NotificationTemplate {
+  id        String           @id @default(uuid()) @db.Uuid
+  type      NotificationType @unique
+  title     String
+  body      String
+  isActive  Boolean          @default(true)
+  createdAt DateTime         @default(now())
+}
+
+model Plan {
+  id                   String  @id @default(uuid()) @db.Uuid
+  name                 String  @unique
+  slug                 String  @unique
+  stripePriceMonthlyId String  @default("")
+  stripePriceYearlyId  String  @default("")
+  priceMonthly         Decimal @default(0) @db.Decimal(8, 2)
+  priceYearly          Decimal @default(0) @db.Decimal(8, 2)
+  currency             String  @default("LKR")
+  features             Json    @default("[]")
+  isActive             Boolean @default(true)
+  sortOrder            Int     @default(0)
+}
+
+model Subscription {
+  id                   String             @id @default(uuid()) @db.Uuid
+  userId               String             @unique @db.Uuid
+  planId               String?            @db.Uuid
+  stripeCustomerId     String             @default("")
+  stripeSubscriptionId String             @default("")
+  status               SubscriptionStatus @default(trialing)
+  currentPeriodStart   DateTime?
+  currentPeriodEnd     DateTime?
+  trialEnd             DateTime?
+  cancelAtPeriodEnd    Boolean            @default(false)
+  billingInterval      BillingInterval    @default(month)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+}
+
+model Payment {
+  id                    String   @id @default(uuid()) @db.Uuid
+  userId                String   @db.Uuid
+  subscriptionId        String?  @db.Uuid
+  stripePaymentIntentId String   @default("")
+  stripeInvoiceId       String   @default("")
+  amount                Decimal  @db.Decimal(10, 2)
+  currency              String   @default("lkr")
+  status                String   @default("succeeded")
+  description           String   @default("")
+  invoiceUrl            String   @default("")
+  createdAt             DateTime @default(now())
+}
+
+model Feedback {
+  id        String         @id @default(uuid()) @db.Uuid
+  userId    String?        @db.Uuid
+  type      FeedbackType
+  status    FeedbackStatus @default(new)
+  title     String
+  message   String
+  pageUrl   String         @default("")
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model AIUsageLog {
+  id             String        @id @default(uuid()) @db.Uuid
+  userId         String?       @db.Uuid
+  feature        String
+  featureName    String
+  promptVersion  String        @default("v1")
+  tokensUsed     Int           @default(0)
+  responseTime   Float?
+  responseTimeMs Int?
+  estimatedCost  Decimal       @default(0) @db.Decimal(10, 6)
+  status         AIUsageStatus @default(success)
+  success        Boolean       @default(true)
+  errorMessage   String        @default("")
+  createdAt      DateTime      @default(now())
+}
+
+model AIFeedback {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  requestType String
+  inputText   String
+  outputText  String
+  feedback    String
+  comment     String   @default("")
+  createdAt   DateTime @default(now())
+}
+
+model PromptTemplate {
+  id         String   @id @default(uuid()) @db.Uuid
+  feature    String
+  version    String
+  promptText String
+  isActive   Boolean  @default(false)
+  notes      String   @default("")
+  createdAt  DateTime @default(now())
+
+  @@unique([feature, version])
+}
