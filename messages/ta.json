@@ -60,5 +60,168 @@
   "சிங்களம்": "சிங்களம்",
   "தமிழ்": "தமிழ்",
   "XpressJobs": "XpressJobs",
-  "LinkedIn Sri Lanka": "LinkedIn இலங்கை"
+  "LinkedIn Sri Lanka": "LinkedIn இலங்கை",
+  "phase1": {
+    "meta": {
+      "landing": {
+        "title": "Career Studio - AI Powered Resume Builder",
+        "description": "Land your dream job with an ATS-proof resume, Sri Lanka salary context, and AI-powered career tools."
+      },
+      "pricing": {
+        "title": "Pricing - Career Studio",
+        "description": "Choose a Sri Lanka-first career plan with LKR pricing for resumes, ATS scoring, cover letters, and LinkedIn optimization."
+      },
+      "tools": {
+        "title": "AI Tools Suite - Career Studio",
+        "description": "AI-powered career tools for resumes, ATS checks, cover letters, LinkedIn audits, courses, and job search workflows."
+      },
+      "resources": {
+        "title": "Career Resources - Career Studio",
+        "description": "Templates, ebooks, guides, and practical job-search resources for Sri Lankan professionals."
+      },
+      "courses": {
+        "title": "Courses in Sri Lanka - Career Studio",
+        "description": "Discover Sri Lankan degrees, diplomas, certifications, and career tools by provider, city, and pathway."
+      },
+      "courseDiplomas": {
+        "title": "Diplomas in Sri Lanka - Career Studio",
+        "description": "Explore verified diploma pathways for technology, business, HR, and professional career tracks."
+      },
+      "courseTools": {
+        "title": "Career Tools Directory - Career Studio",
+        "description": "A practical directory of AI and productivity tools for Sri Lankan learners and job seekers."
+      },
+      "courseCities": {
+        "title": "Study Cities in Sri Lanka - Career Studio",
+        "description": "Compare Sri Lankan course hubs by city, district, and career focus."
+      },
+      "courseSaved": {
+        "title": "Saved Courses - Career Studio",
+        "description": "Sign in to save Sri Lankan courses, diplomas, and career tools for later."
+      },
+      "blog": {
+        "title": "Blog - Career Insights & Tips",
+        "description": "Resume strategies, ATS advice, salary guidance, and career tips for Sri Lankan professionals."
+      },
+      "blogPost": {
+        "notFoundTitle": "Article not found - Career Studio Blog"
+      }
+    },
+    "landing": {
+      "kicker": "Sri Lanka first",
+      "headline": "Land your dream job with an ATS-proof resume",
+      "subheadline": "Career Studio brings AI-powered resume building, ATS checks, LKR salary context, and job-search workflows into one focused platform for Sri Lankan job seekers.",
+      "primaryCta": "Build my resume - free",
+      "secondaryCta": "Check ATS score",
+      "trustOne": "No credit card required",
+      "trustTwo": "Free templates included",
+      "previewAlt": "Career Studio ATS resume preview",
+      "featuresEyebrow": "AI-powered career toolkit",
+      "featuresTitle": "Move from resume draft to confident application",
+      "featuresDescription": "The Django pilot focused on practical career tasks. Phase 1 keeps that behavior visible while the Next.js feature modules come online.",
+      "templatesEyebrow": "Resume templates",
+      "templatesTitle": "Basic, Pro, and Premium resume tiers",
+      "templatesDescription": "The template model carries over the original Sri Lanka-focused pricing and tier structure, ready for the full resume engine phase.",
+      "ctaEyebrow": "Start simple",
+      "ctaTitle": "Build the first version, then improve it with ATS feedback",
+      "ctaDescription": "Use the public tools to understand the workflow, then sign in when the migrated editor and AI flows land in the next phases."
+    },
+    "pricing": {
+      "eyebrow": "LKR-first plans",
+      "title": "Invest in your career growth",
+      "description": "Choose the plan that matches your job search. Paid tiers are shown as deliberate coming-soon offers until billing is migrated.",
+      "noteTitle": "Sri Lanka pricing context",
+      "noteBody": "Prices are presented in LKR by default. Stripe billing will be connected in a later phase, so paid plan buttons stay disabled for now."
+    },
+    "tools": {
+      "eyebrow": "AI Tools Suite",
+      "title": "Career tools for every step of the search",
+      "description": "Build resumes, score ATS readiness, draft cover letters, audit LinkedIn, and discover local learning paths from one public showcase.",
+      "openTool": "Open tool",
+      "comingSoon": "Coming soon",
+      "proEyebrow": "Pro toolkit",
+      "proTitle": "Premium tools stay visible, not fake-linked",
+      "proDescription": "The Django showcase included several planned tools. This port keeps those cards clear and disabled until their app routes are fully migrated."
+    },
+    "resources": {
+      "eyebrow": "Career Resources",
+      "title": "Guides, templates, and learning materials",
+      "description": "Practical resources for resumes, interviews, LinkedIn, job applications, and workplace decisions in Sri Lanka.",
+      "browse": "Browse",
+      "comingSoon": "Coming soon",
+      "collectionsEyebrow": "Popular collections",
+      "collectionsTitle": "Start with a focused kit",
+      "ctaEyebrow": "Resource library",
+      "ctaTitle": "Public resources now, saved libraries later",
+      "ctaDescription": "The resource library has a static public surface in Phase 1. Downloads, annotations, and saved resources move into the authenticated phases."
+    },
+    "courses": {
+      "eyebrow": "Courses in Sri Lanka",
+      "title": "Find courses, diplomas, and practical tools by pathway",
+      "description": "A static first pass of the Sri Lankan education directory seeded from the Django management commands.",
+      "statsCourses": "featured programmes",
+      "statsCities": "study cities",
+      "statsInstallments": "with installments",
+      "statsFree": "free pathways",
+      "searchLabel": "Search courses",
+      "categoryLabel": "Category",
+      "cityLabel": "City",
+      "levelLabel": "Level",
+      "allCategories": "All categories",
+      "allCities": "All cities",
+      "allLevels": "All levels",
+      "filter": "Filter",
+      "verifiedOnly": "Verified only",
+      "installmentsOnly": "Installments available",
+      "freeOnly": "Free only",
+      "resultsTitle": "Course matches",
+      "resultsCount": "results"
+    },
+    "courseDiplomas": {
+      "eyebrow": "Diplomas",
+      "title": "Career-focused diploma pathways",
+      "description": "Diplomas and higher diplomas for learners who want practical progression into technology, business, HR, and management roles."
+    },
+    "courseTools": {
+      "eyebrow": "Tools directory",
+      "title": "AI and productivity tools for learning and applying",
+      "description": "A compact version of the Django tools directory, focused on practical tools job seekers can use immediately.",
+      "verified": "Verified"
+    },
+    "courseCities": {
+      "eyebrow": "Study cities",
+      "title": "Compare course hubs around Sri Lanka",
+      "description": "Browse the cities and districts that anchor the local course and diploma directory.",
+      "courseCount": "courses"
+    },
+    "courseSaved": {
+      "eyebrow": "Saved courses",
+      "title": "Keep a shortlist of courses and tools",
+      "description": "The Django public view rendered an empty state for signed-out users; this keeps that behavior for Phase 1.",
+      "emptyTitle": "No saved courses yet",
+      "emptyDescription": "Sign in to save courses, diplomas, cities, and tools once authenticated course actions are migrated.",
+      "signIn": "Sign in",
+      "browseCourses": "Browse courses"
+    },
+    "blog": {
+      "eyebrow": "Career Insights & Professional Tips",
+      "title": "Insights for the modern professional",
+      "description": "Resume strategies, ATS advice, salary context, and interview guidance for Sri Lankan job seekers.",
+      "searchLabel": "Search articles",
+      "categoryLabel": "Topic",
+      "sortLabel": "Sort",
+      "allTopics": "All topics",
+      "latest": "Latest",
+      "oldest": "Oldest",
+      "filter": "Filter",
+      "featured": "Featured",
+      "readArticle": "Read article",
+      "empty": "No posts found for those filters."
+    },
+    "blogPost": {
+      "back": "Back to blog",
+      "topics": "Topics",
+      "related": "Related posts"
+    }
+  }
 }
