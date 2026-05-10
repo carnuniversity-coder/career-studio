@@ -27,6 +27,7 @@ const protectedRoutes = new Set([
   "/messaging",
   "/forum",
   "/connections",
+  "/mentorship",
   "/notifications",
   "/billing",
   "/settings",

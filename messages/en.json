@@ -664,5 +664,153 @@
       "rewrite": "Rewrite",
       "processing": "Audit results are still processing."
     }
+  },
+  "Mentorship": "Mentorship",
+  "phase5": {
+    "meta": {
+      "messaging": {
+        "title": "Messages - Career Studio",
+        "description": "Send direct messages with protected attachments and in-app notifications."
+      },
+      "forum": {
+        "title": "Forum - Career Studio",
+        "description": "Join role-based discussions, ask questions, reply, vote, and flag issues."
+      },
+      "forumThread": {
+        "title": "Forum Thread - Career Studio",
+        "description": "Read and reply to a Career Studio forum discussion."
+      },
+      "connections": {
+        "title": "Connections - Career Studio",
+        "description": "Browse members, send connection requests, endorse skills, and manage network privacy."
+      },
+      "notifications": {
+        "title": "Notifications - Career Studio",
+        "description": "Review in-app notifications and manage digest preferences."
+      },
+      "mentorship": {
+        "title": "Mentorship - Career Studio",
+        "description": "Find mentors, request mentorship, accept requests, and schedule sessions."
+      }
+    },
+    "messaging": {
+      "title": "Messages",
+      "subtitle": "Send direct messages, keep a lightweight conversation history, and attach safe resume or chat files up to 10MB.",
+      "conversations": "Conversations",
+      "emptyConversations": "No conversations yet.",
+      "startConversation": "Start a conversation",
+      "searchMembers": "Search members",
+      "search": "Search",
+      "messagePlaceholder": "Write a short message",
+      "send": "Send",
+      "conversation": "Conversation",
+      "realtimeNote": "Supabase Realtime wiring is deferred; this page refreshes after each message.",
+      "archive": "Archive",
+      "emptyMessages": "Select a member or send a first message.",
+      "replyPlaceholder": "Write your reply"
+    },
+    "forum": {
+      "title": "Forum",
+      "subtitle": "Role-based discussions for Sri Lankan job seekers, with replies, voting, flags, and thread notifications.",
+      "createThread": "Create thread",
+      "generalDiscussion": "General discussion",
+      "threadTitle": "Thread title",
+      "threadBody": "Ask a question, share context, or start a discussion",
+      "publishThread": "Publish thread",
+      "trending": "Trending",
+      "latestThreads": "Latest threads",
+      "emptyThreads": "No forum threads yet.",
+      "pinned": "Pinned",
+      "votes": "votes"
+    },
+    "forumThread": {
+      "back": "Back to forum",
+      "locked": "Locked",
+      "upvote": "Upvote",
+      "downvote": "Downvote",
+      "votes": "votes",
+      "flagReason": "Reason for flagging",
+      "flag": "Flag",
+      "replies": "Replies",
+      "emptyReplies": "No replies yet.",
+      "replyPlaceholder": "Write a helpful reply",
+      "postReply": "Post reply"
+    },
+    "connections": {
+      "title": "Connections",
+      "subtitle": "Browse members, send connection requests, accept invitations, endorse skills, and tune your networking privacy.",
+      "connections": "Connections",
+      "incoming": "Incoming requests",
+      "pending": "Pending sent",
+      "discover": "Discover members",
+      "searchMembers": "Search by name or email",
+      "search": "Search",
+      "requestMessage": "Optional note for the request",
+      "connect": "Connect",
+      "emptyDiscover": "No members match this search.",
+      "myConnections": "My connections",
+      "endorsements": "endorsements",
+      "skillPlaceholder": "Skill to endorse",
+      "endorse": "Endorse",
+      "emptyConnections": "No accepted connections yet.",
+      "incomingRequests": "Incoming requests",
+      "noMessage": "No message included.",
+      "accept": "Accept",
+      "decline": "Decline",
+      "emptyIncoming": "No incoming requests.",
+      "privacy": "Privacy",
+      "showEmail": "Show email to connections",
+      "showPhone": "Show phone to connections",
+      "allowMessages": "Allow direct messages",
+      "allowConnections": "Allow connection requests",
+      "savePrivacy": "Save privacy"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Review message, forum, system, and career workflow notifications in one place.",
+      "unread": "unread",
+      "activity": "Activity",
+      "markAllRead": "Mark all read",
+      "open": "Open",
+      "markRead": "Mark read",
+      "empty": "No notifications yet.",
+      "preferences": "Preferences",
+      "emailNotifications": "Email notifications",
+      "inAppNotifications": "In-app notifications",
+      "dailyDigest": "Daily digest",
+      "savePreferences": "Save preferences"
+    },
+    "mentorship": {
+      "title": "Mentorship",
+      "subtitle": "Find Sri Lankan mentors, request guidance, accept mentees, and schedule sessions from the community workspace.",
+      "mentors": "Mentors",
+      "requests": "Requests",
+      "sessions": "Sessions",
+      "mentorDirectory": "Mentor directory",
+      "requested": "Requested",
+      "requestPlaceholder": "Why would you like mentorship from this person?",
+      "requestMentorship": "Request mentorship",
+      "emptyMentors": "No active mentors yet.",
+      "sessionsTitle": "Scheduled sessions",
+      "meetingLink": "Meeting link",
+      "emptySessions": "No sessions scheduled yet.",
+      "mentorProfile": "Mentor profile",
+      "bioPlaceholder": "Short bio highlighting your mentorship focus",
+      "expertisePlaceholder": "Expertise, comma separated",
+      "hourlyRate": "Hourly rate in LKR",
+      "maxMentees": "Maximum mentees",
+      "availabilityPlaceholder": "Availability notes",
+      "activeMentor": "Active mentor profile",
+      "saveProfile": "Save profile",
+      "incomingRequests": "Incoming requests",
+      "accept": "Accept",
+      "decline": "Decline",
+      "emptyIncoming": "No mentorship requests yet.",
+      "scheduleSession": "Schedule session",
+      "sessionTitle": "Session title",
+      "meetingLinkPlaceholder": "Meeting link",
+      "sessionNotes": "Session notes",
+      "schedule": "Schedule"
+    }
   }
 }

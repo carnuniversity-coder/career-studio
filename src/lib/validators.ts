@@ -1,3 +1,5 @@
+import { fileTypeFromBuffer } from "file-type";
+
 export const resumeMimeTypes = new Set([
   "application/pdf",
   "application/msword",
@@ -14,7 +16,6 @@ export const messageMimeTypes = new Set([
 ]);
 
 export async function detectFileMime(buffer: Buffer) {
-  const { fileTypeFromBuffer } = await import("file-type");
   const detected = await fileTypeFromBuffer(buffer);
   return detected?.mime ?? "application/octet-stream";
 }
