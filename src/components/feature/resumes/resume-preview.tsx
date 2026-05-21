@@ -62,9 +62,24 @@ export function ResumePreview({
     }
   `;
 
+  const { font = "inter", accentColor = "#0f766e" } = content.settings || {};
+  const fontMap: Record<string, string> = {
+    inter: "Inter, sans-serif",
+    roboto: "Roboto, sans-serif",
+    merriweather: "Merriweather, serif",
+  };
+
   return (
-    <article id="resume-print-area" className={cn("min-h-[720px] rounded-lg border bg-white p-8 text-neutral-950 shadow-sm", className)}>
-      <style dangerouslySetInnerHTML={{ __html: printStyles }} />
+    <div className="relative overflow-hidden rounded-lg shadow-sm border bg-neutral-100 flex items-start justify-center p-4">
+       <article 
+         id="resume-print-area" 
+         className={cn("bg-white text-neutral-950 w-full max-w-[21cm] min-h-[29.7cm] p-8 shadow-sm origin-top mx-auto", className)}
+         style={{ 
+           fontFamily: fontMap[font],
+           '--accent': accentColor 
+         } as React.CSSProperties}
+       >
+         <style dangerouslySetInnerHTML={{ __html: printStyles }} />
       {content.sectionOrder.map((section) => {
         if (section === "header") {
           const profileUrl = typeof window !== "undefined" && talentSlug
@@ -75,10 +90,10 @@ export function ResumePreview({
             : null;
 
           return (
-            <header key={section} className={cn("border-b pb-5 flex justify-between items-start gap-4", visual === "graphic" && "rounded-md bg-teal-50 p-5")}>
+            <header key={section} className={cn("border-b pb-5 flex justify-between items-start gap-4", visual === "graphic" && "rounded-md p-5")} style={visual === "graphic" ? { backgroundColor: `${accentColor}15` } : {}}>
               <div>
                 <h2 className="text-3xl font-semibold tracking-tight">{content.header.fullName || "Your Name"}</h2>
-                <p className="mt-1 text-base text-teal-800">{content.header.title || "Target role"}</p>
+                <p className="mt-1 text-base font-medium" style={{ color: accentColor }}>{content.header.title || "Target role"}</p>
                 <p className="mt-3 text-sm text-neutral-600">
                   {[content.header.email, content.header.phone, content.header.location, content.header.linkedin].filter(Boolean).join(" | ")}
                 </p>
@@ -95,12 +110,13 @@ export function ResumePreview({
 
         return (
           <section key={section} className="mt-6">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-teal-800">{sectionTitles[section]}</h3>
+            <h3 className="text-sm font-bold uppercase tracking-[0.18em]" style={{ color: accentColor }}>{sectionTitles[section]}</h3>
             <div className="mt-3">{renderSection(section, content)}</div>
           </section>
         );
       })}
     </article>
+   </div>
   );
 }
 

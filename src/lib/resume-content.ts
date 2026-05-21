@@ -97,6 +97,17 @@ export const resumeContentSchema = z.object({
     )
     .default([]),
   sectionOrder: z.array(z.enum(resumeSectionKeys)).default(["header", "summary", "experience", "education", "skills"]),
+  settings: z.object({
+    font: z.enum(["inter", "roboto", "merriweather"]).default("inter"),
+    accentColor: z.string().default("#0f766e"), // teal-700
+    exportFormat: z.enum(["ats-friendly", "pixel-perfect"]).default("pixel-perfect"),
+    hideReferences: z.boolean().default(false),
+  }).default({
+    font: "inter",
+    accentColor: "#0f766e",
+    exportFormat: "pixel-perfect",
+    hideReferences: false,
+  }),
 });
 
 export type ResumeContent = z.infer<typeof resumeContentSchema>;
@@ -146,6 +157,12 @@ export function defaultResumeContent(seed?: Partial<ResumeContent>): ResumeConte
     awards: [],
     volunteering: [],
     sectionOrder: ["header", "summary", "experience", "education", "skills", "projects", "certifications"],
+    settings: {
+      font: "inter",
+      accentColor: "#0f766e",
+      exportFormat: "pixel-perfect",
+      hideReferences: false,
+    },
     ...seed,
   });
 }

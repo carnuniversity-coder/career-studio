@@ -8,9 +8,10 @@ import { GripVertical, Plus, Sparkles, Trash2, Globe, MapPin, CheckCircle2 } fro
 
 import { ResumePreview } from "@/components/feature/resumes/resume-preview";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { createId, resumeSectionKeys, type ResumeContent, type ResumeSectionKey } from "@/lib/resume-content";
 import { slUniversities, slCompanies, slDistricts } from "@/lib/sl-data";
@@ -235,6 +236,76 @@ export function ResumeEditorClient({
             </Button>
           ))}
         </div>
+
+        {/* Document Settings */}
+        <Card className="bg-white mt-6 border-slate-200">
+          <CardHeader className="pb-3 border-b bg-slate-50/50">
+            <CardTitle className="text-md">Document Settings & Export</CardTitle>
+            <CardDescription className="text-xs">Customize styling and configure PDF export options</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4 grid gap-6 md:grid-cols-2">
+            <div className="space-y-4">
+               <div>
+                  <Label className="text-xs uppercase text-slate-500 font-semibold tracking-wider">Font Family</Label>
+                  <select 
+                     className="mt-1.5 flex h-9 w-full items-center justify-between rounded-md border border-slate-200 bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-950"
+                     value={content.settings?.font || "inter"}
+                     onChange={(e) => setContent(c => ({ ...c, settings: { ...c.settings, font: e.target.value as any } }))}
+                  >
+                     <option value="inter">Inter (Modern Sans)</option>
+                     <option value="roboto">Roboto (Clean Sans)</option>
+                     <option value="merriweather">Merriweather (Classic Serif)</option>
+                  </select>
+               </div>
+               <div>
+                  <Label className="text-xs uppercase text-slate-500 font-semibold tracking-wider">Accent Color</Label>
+                  <div className="mt-2 flex gap-2">
+                     {[
+                        "#0f766e", // Teal
+                        "#1d4ed8", // Blue
+                        "#b91c1c", // Red
+                        "#4338ca", // Indigo
+                        "#334155", // Slate
+                     ].map(color => (
+                        <button
+                           key={color}
+                           type="button"
+                           onClick={() => setContent(c => ({ ...c, settings: { ...c.settings, accentColor: color } }))}
+                           className={`size-6 rounded-full border-2 focus:outline-none ring-offset-2 ${content.settings?.accentColor === color ? 'ring-2 ring-slate-400 border-white' : 'border-transparent'}`}
+                           style={{ backgroundColor: color }}
+                           title={color}
+                        />
+                     ))}
+                  </div>
+               </div>
+            </div>
+            
+            <div className="space-y-4">
+               <div className="flex items-center justify-between space-x-2">
+                 <Label className="flex flex-col gap-1 cursor-pointer" htmlFor="export-format">
+                   <span className="text-sm font-medium leading-none">ATS-Friendly PDF</span>
+                   <span className="text-xs text-slate-500">Strips columns & graphics for parsers</span>
+                 </Label>
+                 <Switch 
+                   id="export-format" 
+                   checked={content.settings?.exportFormat === "ats-friendly"}
+                   onCheckedChange={(checked) => setContent(c => ({ ...c, settings: { ...c.settings, exportFormat: checked ? "ats-friendly" : "pixel-perfect" } }))}
+                 />
+               </div>
+               <div className="flex items-center justify-between space-x-2">
+                 <Label className="flex flex-col gap-1 cursor-pointer" htmlFor="hide-refs">
+                   <span className="text-sm font-medium leading-none">Hide References</span>
+                   <span className="text-xs text-slate-500">Remove 'Available upon request'</span>
+                 </Label>
+                 <Switch 
+                   id="hide-refs" 
+                   checked={content.settings?.hideReferences}
+                   onCheckedChange={(checked) => setContent(c => ({ ...c, settings: { ...c.settings, hideReferences: checked } }))}
+                 />
+               </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="xl:sticky xl:top-20 xl:self-start space-y-6">
@@ -286,6 +357,10 @@ export function ResumeEditorClient({
         <div>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="font-semibold text-neutral-950">{labels.livePreview}</h2>
+            <Button variant="outline" size="sm" className="h-8 gap-1.5 text-teal-700 bg-teal-50 border-teal-200 hover:bg-teal-100">
+               <Sparkles className="size-3.5" />
+               Grammar Check
+            </Button>
           </div>
           <ResumePreview content={content} />
         </div>
