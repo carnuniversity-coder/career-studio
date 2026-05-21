@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateTextWithGemini } from "@/lib/ai";
 
 const recruiterProfileSchema = z.object({
   companyName: z.string().trim().min(1, "Company name is required"),
@@ -432,4 +433,84 @@ export async function getShortlistedTalent() {
       }
     }
   });
+}
+
+export async function generateOutreachDraftAction(input: {
+  talentProfileId: string;
+  jobTitle: string;
+  companyName: string;
+  jobLocation: string;
+  salaryRange: string;
+}) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const recruiter = await prisma.recruiterProfile.findUnique({
+    where: { userId: session.user.id }
+  });
+
+  if (!recruiter) {
+    throw new Error("You must set up a Recruiter Profile first.");
+  }
+
+  const profile = await prisma.talentProfile.findUnique({
+    where: { id: input.talentProfileId },
+    include: {
+      user: { select: { firstName: true, lastName: true } },
+      experiences: { take: 3, orderBy: { startDate: "desc" } },
+      skills: { take: 10, orderBy: { sortOrder: "asc" } }
+    }
+  });
+
+  if (!profile) {
+    throw new Error("Talent profile not found.");
+  }
+
+  const name = profile.user.firstName;
+  const recentRole = profile.experiences[0]?.title || profile.headline;
+  const skillsList = profile.skills.map(s => s.name).join(", ");
+
+  const prompt = `You are ${session.user.name || "a Recruiter"} from ${input.companyName}, writing a highly personalized InMail-style outreach message to ${name}.
+  
+Candidate Context:
+- Current Role: ${recentRole}
+- Skills: ${skillsList}
+- Bio: ${profile.bio || "N/A"}
+
+Role Context:
+- Title: ${input.jobTitle}
+- Location: ${input.jobLocation || "N/A"}
+- Salary: ${input.salaryRange || "N/A"}
+
+Instructions:
+Write a brief, professional, and personalized 3-paragraph message (max 150 words) inviting them to discuss the opportunity. Reference a specific skill or their recent role. Do not use placeholders like [Your Name]. Sign off with my name (${session.user.name || "The Recruiter"}). Do not include a subject line.
+`;
+
+  return generateTextWithGemini(prompt);
+}
+
+export async function saveSearchAction(name: string, query: string, searchParamsString: string) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const recruiter = await prisma.recruiterProfile.findUnique({
+    where: { userId: session.user.id }
+  });
+
+  if (!recruiter) {
+    throw new Error("You must set up a Recruiter Profile first.");
+  }
+
+  const savedSearch = await prisma.savedSearch.create({
+    data: {
+      recruiterId: recruiter.id,
+      name,
+      query,
+      filtersJson: searchParamsString,
+      alertFrequency: "daily",
+    }
+  });
+
+  revalidatePath("/talent-pool");
+  return savedSearch;
 }

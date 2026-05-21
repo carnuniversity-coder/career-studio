@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-import { sendContactRequest, toggleShortlist } from "@/server/actions/recruiter";
+import { sendContactRequest, toggleShortlist, generateOutreachDraftAction } from "@/server/actions/recruiter";
 
 interface PublicProfileClientProps {
   profile: TalentProfile & {
@@ -60,6 +60,7 @@ export function PublicProfileClient({
   const [requestStatus, setRequestStatus] = useState(initialRequestStatus);
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
+  const [isGeneratingDraft, setIsGeneratingDraft] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -108,6 +109,29 @@ export function PublicProfileClient({
       toast.error(err.message || "Failed to send request.");
     } finally {
       setIsSubmittingRequest(false);
+    }
+  };
+
+  const handleGenerateDraft = async () => {
+    if (!formData.jobTitle || !formData.companyName) {
+      toast.error("Please enter a Job Title and Company Name for context.");
+      return;
+    }
+    setIsGeneratingDraft(true);
+    try {
+      const draft = await generateOutreachDraftAction({
+        talentProfileId: profile.id,
+        jobTitle: formData.jobTitle,
+        companyName: formData.companyName,
+        jobLocation: formData.jobLocation,
+        salaryRange: formData.salaryRange,
+      });
+      setFormData(prev => ({ ...prev, message: draft }));
+      toast.success("AI draft generated successfully.");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to generate AI draft.");
+    } finally {
+      setIsGeneratingDraft(false);
     }
   };
 
@@ -276,11 +300,24 @@ export function PublicProfileClient({
                             </div>
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="message">Message to Candidate</Label>
+                            <div className="flex items-center justify-between">
+                              <Label htmlFor="message">Message to Candidate</Label>
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={handleGenerateDraft}
+                                disabled={isGeneratingDraft}
+                                className="h-7 text-xs bg-teal-50 border-teal-200 text-teal-700 hover:bg-teal-100 gap-1"
+                              >
+                                <Sparkles className="size-3" />
+                                {isGeneratingDraft ? "Drafting..." : "AI Draft"}
+                              </Button>
+                            </div>
                             <Textarea 
                               id="message" 
                               placeholder="Introduce your team, project details or any specific instructions..." 
-                              rows={4}
+                              rows={5}
                               value={formData.message}
                               onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
                             />

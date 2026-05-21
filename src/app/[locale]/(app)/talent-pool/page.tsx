@@ -12,6 +12,7 @@ import { defaultLocale, isLocale } from "@/i18n-config";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { searchTalentPool } from "@/server/actions/recruiter";
+import { SaveSearchButton } from "@/components/talent-pool/SaveSearchButton";
 
 type TalentPoolPageProps = {
   params: Promise<{ locale: string }>;
@@ -212,11 +213,14 @@ export default async function TalentPoolPage({ params, searchParams }: TalentPoo
                 <Filter className="size-4" />
                 Advanced Filters
               </CardTitle>
-              {(queryStr || title || skill || district || university || careerLevel || isOpenToWork || verifiedOnly) && (
-                <Button asChild variant="link" size="sm" className="text-xs text-neutral-500 hover:text-neutral-900 h-auto p-0 font-medium">
-                  <Link href={`/${locale}/talent-pool`}>Clear all</Link>
-                </Button>
-              )}
+              <div className="flex items-center gap-2">
+                <SaveSearchButton />
+                {(queryStr || title || skill || district || university || careerLevel || isOpenToWork || verifiedOnly) && (
+                  <Button asChild variant="link" size="sm" className="text-xs text-neutral-500 hover:text-neutral-900 h-auto p-0 font-medium">
+                    <Link href={`/${locale}/talent-pool`}>Clear all</Link>
+                  </Button>
+                )}
+              </div>
             </CardHeader>
             <CardContent className="p-0">
               <form method="GET" className="p-5 space-y-6">
