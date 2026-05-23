@@ -278,13 +278,15 @@ model UserProfile {
 }
 
 model Resume {
-  id          String   @id @default(uuid()) @db.Uuid
-  userId      String   @db.Uuid
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @db.Uuid
   title       String
-  templateKey String   @default("classic")
-  theme       Json     @default("{}")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  templateKey String    @default("classic")
+  theme       Json      @default("{}")
+  shareToken  String?   @unique
+  sharedAt    DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   content ResumeContent?
 
@@ -408,17 +410,19 @@ model ATSCheckResult {
 }
 
 model CoverLetter {
-  id             String   @id @default(uuid()) @db.Uuid
-  userId         String   @db.Uuid
-  resumeId       String?  @db.Uuid
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String    @db.Uuid
+  resumeId       String?   @db.Uuid
   title          String
-  jobTitle       String   @default("")
-  companyName    String   @default("")
-  jobDescription String   @default("")
-  tone           String   @default("PROFESSIONAL")
-  content        Json     @default("{}")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  jobTitle       String    @default("")
+  companyName    String    @default("")
+  jobDescription String    @default("")
+  tone           String    @default("PROFESSIONAL")
+  content        Json      @default("{}")
+  shareToken     String?   @unique
+  sharedAt       DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 model CoverLetterDraft {
@@ -446,14 +450,16 @@ model CoverLetterExport {
 }
 
 model GCVResume {
-  id          String   @id @default(uuid()) @db.Uuid
-  userId      String   @db.Uuid
-  templateId  String?  @db.Uuid
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @db.Uuid
+  templateId  String?   @db.Uuid
   title       String
-  contentJson Json     @default("{}")
-  themeJson   Json     @default("{}")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  contentJson Json      @default("{}")
+  themeJson   Json      @default("{}")
+  shareToken  String?   @unique
+  sharedAt    DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model GCVTemplate {
@@ -740,13 +746,15 @@ model CareerGPSResourceLink {
 }
 
 model LinkedInAudit {
-  id         String   @id @default(uuid()) @db.Uuid
-  userId     String   @db.Uuid
-  targetRole String   @default("")
-  inputText  String   @default("")
-  status     String   @default("pending")
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  targetRole String    @default("")
+  inputText  String    @default("")
+  status     String    @default("pending")
+  shareToken String?   @unique
+  sharedAt   DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model LinkedInInputFile {

@@ -186,8 +186,10 @@ export async function scoreAtsResumeAction(formData: FormData): Promise<AtsScore
 
   try {
     const isPdf = fileType === "pdf";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const geminiContent: any[] = [
+    const geminiContent: Array<
+      | { type: "text"; text: string }
+      | { type: "file"; data: Buffer; mediaType: string }
+    > = [
       {
         type: "text" as const,
         text: `You are an expert ATS (Applicant Tracking System) parser and resume reviewer, benchmarked against Jobscan and Resume Worded.

@@ -8,12 +8,12 @@ import { recordShareView } from "@/lib/share-views";
 
 type PublicResumePageProps = {
   params: Promise<{ resumeId: string }>;
-  searchParams: Promise<{ pw?: string }>;
+  searchParams: Promise<{ pw?: string; token?: string }>;
 };
 
 export default async function PublicResumePage({ params, searchParams }: PublicResumePageProps) {
   const { resumeId } = await params;
-  const { pw } = await searchParams;
+  const { pw, token } = await searchParams;
   const resume = await prisma.resume.findUnique({
     where: { id: resumeId },
     include: { content: true },
@@ -25,12 +25,17 @@ export default async function PublicResumePage({ params, searchParams }: PublicR
 
   const content = parseResumeContent(resume.content.data);
   const access = content.settings?.publicAccess ?? "private";
+  // Token-based sharing is an alternative entry path. If the row has a
+  // shareToken AND the URL provides a matching one, allow regardless of
+  // the in-content access setting. Otherwise fall through to the
+  // existing publicAccess logic.
+  const tokenMatches = !!resume.shareToken && !!token && resume.shareToken === token;
 
-  if (access === "private") {
+  if (!tokenMatches && access === "private") {
     notFound();
   }
 
-  if (access === "password" && content.settings?.publicPassword && pw !== content.settings.publicPassword) {
+  if (!tokenMatches && access === "password" && content.settings?.publicPassword && pw !== content.settings.publicPassword) {
     return (
       <main className="min-h-screen bg-slate-100 px-4 py-16">
         <form className="mx-auto max-w-sm rounded-lg border bg-white p-6 shadow-sm">

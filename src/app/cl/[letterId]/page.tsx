@@ -9,13 +9,19 @@ import { recordShareView } from "@/lib/share-views";
 
 type ShareCoverLetterPageProps = {
   params: Promise<{ letterId: string }>;
+  searchParams: Promise<{ token?: string }>;
 };
 
-export default async function ShareCoverLetterPage({ params }: ShareCoverLetterPageProps) {
+export default async function ShareCoverLetterPage({ params, searchParams }: ShareCoverLetterPageProps) {
   const { letterId } = await params;
+  const { token } = await searchParams;
   const letter = await prisma.coverLetter.findUnique({ where: { id: letterId } });
 
   if (!letter) {
+    notFound();
+  }
+  // Hard ownership gate: no shareToken set OR no ?token= in URL OR mismatch → 404.
+  if (!letter.shareToken || !token || letter.shareToken !== token) {
     notFound();
   }
 

@@ -10,12 +10,16 @@ import { recordShareView } from "@/lib/share-views";
 
 type PublicLinkedInAuditPageProps = {
   params: Promise<{ auditId: string }>;
+  searchParams: Promise<{ token?: string }>;
 };
 
-export default async function PublicLinkedInAuditPage({ params }: PublicLinkedInAuditPageProps) {
+export default async function PublicLinkedInAuditPage({ params, searchParams }: PublicLinkedInAuditPageProps) {
   const { auditId } = await params;
+  const { token } = await searchParams;
   const audit = await prisma.linkedInAudit.findUnique({ where: { id: auditId } });
   if (!audit) notFound();
+  // Hard ownership gate: no shareToken set OR no ?token= in URL OR mismatch → 404.
+  if (!audit.shareToken || !token || audit.shareToken !== token) notFound();
 
   const [resultRecord, extractedProfile] = await Promise.all([
     prisma.linkedInAuditResult.findUnique({ where: { auditId } }),

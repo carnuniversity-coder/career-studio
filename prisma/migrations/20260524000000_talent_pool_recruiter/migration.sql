@@ -1,10 +1,26 @@
 
 -- AlterTable
+ALTER TABLE "resumes" ADD COLUMN     "shareToken" TEXT,
+ADD COLUMN     "sharedAt" TIMESTAMP(3);
+
+-- AlterTable
 ALTER TABLE "ats_check_results" ADD COLUMN     "shareToken" TEXT,
 ADD COLUMN     "sharedAt" TIMESTAMP(3);
 
 -- AlterTable
+ALTER TABLE "CoverLetter" ADD COLUMN     "shareToken" TEXT,
+ADD COLUMN     "sharedAt" TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "GCVResume" ADD COLUMN     "shareToken" TEXT,
+ADD COLUMN     "sharedAt" TIMESTAMP(3);
+
+-- AlterTable
 ALTER TABLE "CareerGPSPlan" ADD COLUMN     "shareToken" TEXT,
+ADD COLUMN     "sharedAt" TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "LinkedInAudit" ADD COLUMN     "shareToken" TEXT,
 ADD COLUMN     "sharedAt" TIMESTAMP(3);
 
 -- CreateTable
@@ -378,10 +394,22 @@ CREATE INDEX "share_views_type_itemId_idx" ON "share_views"("type", "itemId");
 CREATE INDEX "share_views_ownerId_idx" ON "share_views"("ownerId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "resumes_shareToken_key" ON "resumes"("shareToken");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "ats_check_results_shareToken_key" ON "ats_check_results"("shareToken");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "CoverLetter_shareToken_key" ON "CoverLetter"("shareToken");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "GCVResume_shareToken_key" ON "GCVResume"("shareToken");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "CareerGPSPlan_shareToken_key" ON "CareerGPSPlan"("shareToken");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "LinkedInAudit_shareToken_key" ON "LinkedInAudit"("shareToken");
 
 -- AddForeignKey
 ALTER TABLE "talent_profiles" ADD CONSTRAINT "talent_profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "django_users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

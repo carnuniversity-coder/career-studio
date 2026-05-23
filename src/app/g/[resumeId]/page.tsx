@@ -10,12 +10,16 @@ import { recordShareView } from "@/lib/share-views";
 
 type PublicGcvPageProps = {
   params: Promise<{ resumeId: string }>;
+  searchParams: Promise<{ token?: string }>;
 };
 
-export default async function PublicGcvPage({ params }: PublicGcvPageProps) {
+export default async function PublicGcvPage({ params, searchParams }: PublicGcvPageProps) {
   const { resumeId } = await params;
+  const { token } = await searchParams;
   const resume = await prisma.gCVResume.findUnique({ where: { id: resumeId } });
   if (!resume) notFound();
+  // Hard ownership gate: no shareToken set OR no ?token= in URL OR mismatch → 404.
+  if (!resume.shareToken || !token || resume.shareToken !== token) notFound();
 
   const content = parseResumeContent(resume.contentJson);
   const theme = parseGcvTheme(resume.themeJson);

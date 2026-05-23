@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { AtsCheckerClient } from "@/components/feature/ats/ats-checker-client";
+import { Button } from "@/components/ui/button";
 import { defaultLocale, isLocale } from "@/i18n-config";
 
 type AtsPageProps = {
@@ -26,9 +28,14 @@ export default async function AtsPage({ params }: AtsPageProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight text-neutral-950">{t("title")}</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-600">{t("subtitle")}</p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight text-neutral-950">{t("title")}</h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-neutral-600">{t("subtitle")}</p>
+        </div>
+        <Button asChild variant="outline">
+          <Link href={`/${locale}/ats/history`}>View history</Link>
+        </Button>
       </div>
       <AtsCheckerClient
         labels={{
