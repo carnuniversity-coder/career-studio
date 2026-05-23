@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Brain, CheckCircle2, Compass, Globe2, GraduationCap, Lock, Route, Share2, Sparkles, Target, Users } from "lucide-react";
+import Link from "next/link";
+import { Brain, CheckCircle2, Compass, Download, Globe2, GraduationCap, Lock, Route, Share2, Sparkles, Target, Users } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 import { AiUnavailableBanner, isAiAvailable } from "@/components/ai-unavailable-banner";
+import { CareerCompareCard } from "@/components/feature/career-gps/career-compare";
+import { RiasecAssessment } from "@/components/feature/career-gps/riasec-assessment";
 import { ShareToggleButton } from "@/components/share-toggle-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -215,9 +218,9 @@ export default async function CareerGpsPage({ params, searchParams }: CareerGpsP
                   <option value="Arts">Arts</option>
                   <option value="Vocational">Vocational / HND</option>
                 </select>
-                <Input name="hollandCode" placeholder="Holland code e.g. IAS" maxLength={3} />
                 <Input name="familyExpectation" type="number" min={0} max={10} placeholder="Family expectations 0-10" defaultValue={5} />
               </div>
+              <RiasecAssessment hiddenInputName="hollandCode" />
               <label className="flex items-center gap-2 rounded-md border p-3 text-sm text-neutral-700">
                 <input type="checkbox" name="diasporaMode" />
                 I am Sri Lankan abroad or considering returning to Sri Lanka
@@ -260,7 +263,7 @@ export default async function CareerGpsPage({ params, searchParams }: CareerGpsP
                       <p className="mt-1 text-xs leading-5 text-neutral-600">{planData?.plan_strength.label || planStrengthLabel(planData?.plan_strength.score ?? 0)}</p>
                     </div>
                     {selectedPlan ? (
-                      <div className="border-t pt-3">
+                      <div className="space-y-2 border-t pt-3">
                         <ShareToggleButton
                           kind="career-gps"
                           id={selectedPlan.id}
@@ -268,6 +271,11 @@ export default async function CareerGpsPage({ params, searchParams }: CareerGpsP
                           initialToken={selectedPlan.shareToken}
                           locale={locale}
                         />
+                        <Button asChild variant="outline" size="sm" className="w-full">
+                          <Link href={`/api/career-gps/${selectedPlan.id}/export/pdf`} target="_blank" rel="noreferrer">
+                            <Download className="size-3.5" /> Download PDF roadmap
+                          </Link>
+                        </Button>
                       </div>
                     ) : null}
                   </div>
@@ -316,6 +324,10 @@ export default async function CareerGpsPage({ params, searchParams }: CareerGpsP
                   </div>
                 </div>
 
+                {planData?.constellation && planData.constellation.length >= 2 ? (
+                  <CareerCompareCard constellation={planData.constellation} />
+                ) : null}
+
                 <div className="grid gap-4 lg:grid-cols-3">
                   {planData?.pathways.map((pathway) => (
                     <div key={pathway.type} className="rounded-lg border bg-white p-4">
@@ -330,6 +342,20 @@ export default async function CareerGpsPage({ params, searchParams }: CareerGpsP
                             <div>Rs {Math.round(point.p25 / 1000)}k-{Math.round(point.p75 / 1000)}k</div>
                           </div>
                         ))}
+                      </div>
+                      <div className="mt-3 grid grid-cols-2 gap-2 border-t pt-3 text-[11px]">
+                        <Link
+                          href={`/${locale}/resumes?target=${encodeURIComponent(pathway.role)}`}
+                          className="rounded-md border bg-neutral-50 px-2 py-1.5 text-center font-medium text-neutral-800 hover:bg-teal-50 hover:text-teal-900"
+                        >
+                          Tailor resume
+                        </Link>
+                        <Link
+                          href={`/${locale}/cover-letter?target=${encodeURIComponent(pathway.role)}`}
+                          className="rounded-md border bg-neutral-50 px-2 py-1.5 text-center font-medium text-neutral-800 hover:bg-teal-50 hover:text-teal-900"
+                        >
+                          Cover letter
+                        </Link>
                       </div>
                     </div>
                   ))}

@@ -1,10 +1,16 @@
 "use client";
 
+// User-uploaded avatars and cover images come from arbitrary remote
+// URLs without known dimensions. Wrapping them in next/image would
+// require width/height props or fill mode + remote-image config in
+// next.config.ts. For the public profile we keep <img> intentionally.
+/* eslint-disable @next/next/no-img-element */
+
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { 
-  Briefcase, CheckCircle, ShieldCheck, Mail, Phone, MapPin, 
-  Sparkles, FileText, Send, Star, Bookmark, BookmarkCheck, ExternalLink, Calendar
+import {
+  Briefcase, CheckCircle, ShieldCheck, Mail, Phone, MapPin,
+  Sparkles, FileText, Send, Star, Bookmark, BookmarkCheck, ExternalLink
 } from "lucide-react";
 import type { 
   TalentProfile, TalentExperience, TalentEducation, 

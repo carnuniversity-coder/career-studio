@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Search, MapPin, Briefcase, Trash2, ArrowRight } from "lucide-react";
+import { Search, Trash2, ArrowRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { defaultLocale, isLocale } from "@/i18n-config";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";

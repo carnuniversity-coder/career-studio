@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Eye, Search, FileText, CheckCircle, XCircle, ArrowRight, User, Globe, Edit3, MessageSquare, AlertCircle, Sparkles, ShieldAlert, Lock, Unlock } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { Eye, Search, CheckCircle, XCircle, ArrowRight, Globe, Edit3, MessageSquare, AlertCircle, Sparkles, ShieldAlert, Lock, Unlock } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

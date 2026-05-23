@@ -1,8 +1,6 @@
-import { NextResponse } from "next/server";
-
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { interpretScore, type AtsScoreResult } from "@/lib/ats-scoring";
+import { interpretScore } from "@/lib/ats-scoring";
 
 export async function GET(req: Request) {
   const session = await auth();

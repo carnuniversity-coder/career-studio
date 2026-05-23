@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Copy, Download, FileText, Plus, Trash2, LayoutTemplate } from "lucide-react";
+import { Copy, Download, FileText, Plus, LayoutTemplate } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

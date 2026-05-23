@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { interpretScore } from "@/lib/ats-scoring";
 import { prisma } from "@/lib/prisma";
-import { maskList, maskText } from "@/lib/share-mask";
+import { maskList } from "@/lib/share-mask";
 import { recordShareView } from "@/lib/share-views";
 
 type SharePageProps = {

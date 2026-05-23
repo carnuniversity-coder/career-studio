@@ -1,9 +1,14 @@
 "use client";
 
+// Candidate avatars come from arbitrary remote URLs without known
+// dimensions; keep <img> intentionally rather than configuring
+// next/image with width/height + remote-image policy.
+/* eslint-disable @next/next/no-img-element */
+
 import React, { useState, useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { MoreVertical, Mail, ExternalLink, Calendar, MapPin, Building2, GripVertical } from "lucide-react";
+import { MoreVertical, Mail, ExternalLink, MapPin, Building2, GripVertical } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";

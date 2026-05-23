@@ -1,5 +1,10 @@
 "use client";
 
+// User-uploaded avatars come from arbitrary remote URLs without known
+// dimensions; keep <img> intentionally rather than configuring
+// next/image with width/height + remote-image policy.
+/* eslint-disable @next/next/no-img-element */
+
 import React, { useState } from "react";
 import { toast } from "sonner";
 import {

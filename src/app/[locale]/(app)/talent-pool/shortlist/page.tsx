@@ -1,12 +1,16 @@
+// Candidate avatars come from arbitrary remote URLs without known
+// dimensions; keep <img> intentionally rather than configuring
+// next/image with width/height + remote-image policy.
+/* eslint-disable @next/next/no-img-element */
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Bookmark, MapPin, ShieldCheck, ChevronRight, Trash2, Search, ArrowLeft } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { Bookmark, ShieldCheck, ChevronRight, Trash2, ArrowLeft } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { defaultLocale, isLocale } from "@/i18n-config";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";

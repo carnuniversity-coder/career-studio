@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
-import { Loader2, Radio, Sparkles, Mic, MicOff, RefreshCw, User, MessageSquareCode, Volume2, CheckCircle2 } from "lucide-react";
+import { Loader2, Radio, Sparkles, Mic, MicOff, RefreshCw, User, CheckCircle2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

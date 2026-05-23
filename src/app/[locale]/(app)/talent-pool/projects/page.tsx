@@ -2,14 +2,13 @@ import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Briefcase, Plus, FolderGit2, Users, Clock, ArrowRight } from "lucide-react";
+import { FolderGit2, Users, Clock, ArrowRight } from "lucide-react";
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { defaultLocale, isLocale } from "@/i18n-config";
 import { getProjects } from "@/server/actions/recruiter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { CreateProjectDialog } from "@/components/recruiter/CreateProjectDialog";
 
 export const metadata: Metadata = {
