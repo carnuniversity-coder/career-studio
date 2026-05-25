@@ -97,6 +97,10 @@ export async function generateCareerGpsPlanAction(locale: Locale, formData: Form
       dataJson: { experienceLevel: parsed.experienceLevel, identityStory: parsed.identityStory, languageMode: parsed.languageMode },
     },
   });
+  
+  const questions = {};
+  const goals = {};
+  
   await prisma.careerGPSQuestionnaire.create({
     data: {
       sessionId: session.id,

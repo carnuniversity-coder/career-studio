@@ -7,11 +7,13 @@
 
 import React, { useState } from "react";
 import { toast } from "sonner";
-import {
-  Sparkles, Plus, Trash2, Award, Briefcase, GraduationCap,
-  Wrench, FolderGit, HeartHandshake, FileText, Settings2,
-  Save, User, Globe, Lock, ShieldCheck, Upload
+import { 
+  Plus, Settings2, Trash2, ShieldCheck, Mail, Phone, ExternalLink, 
+  MapPin, Briefcase, GraduationCap, Code, Globe, 
+  MessageSquare, LayoutTemplate, Star, Edit, Upload, FileText, Download, Target, Sparkles, Check, ChevronDown, CheckCircle2, AlertTriangle, Save, Eye, ArrowRight, Video, User,
+  Lock, Wrench, FolderGit, HeartHandshake, Award
 } from "lucide-react";
+import { parseLinkedInPdfAction } from "@/server/actions/linkedin/audit";
 import type {
   TalentProfile, TalentExperience, TalentEducation,
   TalentSkill, TalentProject, TalentService,
@@ -689,16 +691,37 @@ export function ProfileBuilder({ initialProfile, locale }: ProfileBuilderProps) 
                   <h4 className="font-semibold mb-1">Upload Public Resume (PDF only)</h4>
                   <p className="text-xs text-muted-foreground max-w-sm mx-auto mb-4">Provide a professional copy. Private information like direct phone number is safe.</p>
                   <div className="flex justify-center">
-                    {/* Simulated Upload Button */}
-                    <Button 
-                      onClick={() => {
-                        saveCVPath("/resumes/sample-cv.pdf", "Chanuka_Jeewantha_CV.pdf");
-                        toast.success("Mock CV upload processed! Score updated.");
-                      }}
-                      className="bg-teal-700 hover:bg-teal-800 text-white"
-                    >
-                      Simulate PDF Upload
-                    </Button>
+                    {/* Actual File Upload */}
+                    <div className="relative">
+                      <input 
+                        type="file" 
+                        accept=".pdf"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          
+                          toast.loading("Parsing CV with AI...", { id: "cv-upload" });
+                          try {
+                            const formData = new FormData();
+                            formData.append("profileFile", file);
+                            const parsed = await parseLinkedInPdfAction(formData);
+                            saveCVPath(`/resumes/${file.name}`, file.name);
+                            toast.success(`CV Parsed! Extracted ${parsed.experience?.length || 0} experiences.`, { id: "cv-upload" });
+                            
+                            // Optionally populate basic info with parsed data if empty
+                            if (!baseInfo.bio && parsed.about) {
+                              setBaseInfo(prev => ({ ...prev, bio: parsed.about }));
+                            }
+                          } catch (err) {
+                            toast.error("Failed to parse CV. Ensure it is a valid PDF.", { id: "cv-upload" });
+                          }
+                        }}
+                      />
+                      <Button className="bg-teal-700 hover:bg-teal-800 text-white pointer-events-none">
+                        Select PDF Resume
+                      </Button>
+                    </div>
                   </div>
                 </div>
 

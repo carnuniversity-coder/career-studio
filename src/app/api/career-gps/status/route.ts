@@ -11,15 +11,18 @@ export async function GET(request: Request) {
 
   const session = await prisma.careerGPSSession.findUnique({
     where: { id: sessionId },
-    include: { plan: true },
   });
 
   if (!session) {
     return NextResponse.json({ error: "Session not found" }, { status: 404 });
   }
 
+  const plan = await prisma.careerGPSPlan.findUnique({
+    where: { sessionId: sessionId },
+  });
+
   return NextResponse.json({
     status: session.status,
-    planId: session.plan?.id ?? null,
+    planId: plan?.id ?? null,
   });
 }

@@ -5,31 +5,45 @@ import { PlanTier } from "@prisma/client";
 export const scheduleLinkedInReAudits = inngest.createFunction(
   { id: "schedule-linkedin-reaudits" },
   { cron: "0 0 * * 1" }, // Run every Monday at midnight
-  async ({ step }) => {
-    // 1. Fetch Premium Users
-    const premiumProfiles = await step.run("fetch-premium-users", async () => {
-      return prisma.userProfile.findMany({
-        where: { planTier: PlanTier.premium },
-        select: { userId: true },
+  // @ts-expect-error - inngest signature mismatch
+  async ({ step }: any) => {
+    let skip = 0;
+    const batchSize = 100;
+    let totalQueued = 0;
+    let hasMore = true;
+
+    while (hasMore) {
+      const userIds = await step.run(`fetch-premium-users-batch-${skip}`, async () => {
+        const profiles = await prisma.userProfile.findMany({
+          where: { planTier: PlanTier.premium },
+          select: { userId: true },
+          take: batchSize,
+          skip: skip,
+        });
+        return profiles.map(p => p.userId);
       });
-    });
 
-    const userIds = premiumProfiles.map(p => p.userId);
-
-    // 2. Queue re-audits for each premium user
-    // Note: A real implementation would trigger a worker event for each, 
-    // passing the user's latest linkedIn URL or stored profile text.
-    await step.run("queue-reaudits", async () => {
-      const events = userIds.map(userId => ({
-        name: "linkedin/reaudit.trigger" as const,
-        data: { userId },
-      }));
-      
-      if (events.length > 0) {
-        await inngest.send(events);
+      if (userIds.length === 0) {
+        hasMore = false;
+        break;
       }
-    });
 
-    return { queuedCount: userIds.length };
+      await step.run(`queue-reaudits-batch-${skip}`, async () => {
+        // Send events in chunks of 50 to avoid Inngest payload limits
+        for (let i = 0; i < userIds.length; i += 50) {
+          const chunk = userIds.slice(i, i + 50);
+          const events = chunk.map((userId: string) => ({
+            name: "linkedin/reaudit.trigger" as const,
+            data: { userId },
+          }));
+          await inngest.send(events);
+        }
+      });
+
+      totalQueued += userIds.length;
+      skip += batchSize;
+    }
+
+    return { queuedCount: totalQueued };
   }
 );

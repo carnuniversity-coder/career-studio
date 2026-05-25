@@ -18,10 +18,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createProject } from "@/server/actions/recruiter";
+import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 
 export function CreateProjectDialog() {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const locale = useLocale();
   const [formData, setFormData] = useState({ name: "", description: "" });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,12 +34,11 @@ export function CreateProjectDialog() {
 
     setIsLoading(true);
     try {
-      await createProject(formData.name, formData.description);
+      const project = await createProject(formData.name, formData.description);
       toast.success("Project created successfully!");
       setOpen(false);
       setFormData({ name: "", description: "" });
-      // TODO: redirect to /en/talent-pool/projects/<project.id> once
-      // createProject returns the new row's id.
+      router.push(`/${locale}/talent-pool/projects/${project.id}`);
     } catch (error: any) {
       toast.error(error.message || "Failed to create project");
     } finally {

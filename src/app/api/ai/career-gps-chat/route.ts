@@ -14,5 +14,5 @@ Keep your responses short, conversational, and direct. Ask one clear question at
     messages,
   });
 
-  return result.toDataStreamResponse();
+  return result.toTextStreamResponse();
 }
